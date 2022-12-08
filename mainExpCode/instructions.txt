@@ -1,0 +1,8 @@
+{
+"inst1_en" : "Welcome!\nHopefully you are comfortable and relaxed.\n\nDuring this experiment you will see faces flashed on the screen.\nThe only thing you should do\nis press a button when the colour changes.\n\nPress a button to continue.",
+"inst1_nl" : "Welkom!\nHopelijk lig je comfortabel en ontspannen.\n\nTijdens het experiment worden er gezichten kort op het scherm getoond.\nHet enige wat jij hoeft te doen is\nop een knop drukken wanneer de kleur van de afbeelding verandert.\n\nDruk op een knop als je er klaar voor bent.",
+"inst2_en" : "The experiment is about to start!\n\nWaiting for the scanner trigger..",
+"inst2_nl" : "Het experiment gaat zo beginnen!\n\nWachten op het signaal van de scanner..",
+"button1" : "bygrewnd",
+"button2" : "t"
+}
