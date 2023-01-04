@@ -1,13 +1,15 @@
-/MainExp_code/__pycache__
-/MainExp_code/data/*
-/MainExp_code/stimuli/*
-/MainExp_code/stimuli/prescreening/*
-/MainExp_code/background/*.bmp
-/MainExp_code/masks/*.bmp
+/mainExpCode/__pycache__/
+/mainExpCode/data/
+/mainExpCode/stimuli/
+/mainExpCode/stimuli/prescreening/*
+/mainExpCode/background/
+/mainExpCode/masks/
+/mainExpCode/saved_images/
 
-/stimuli_matlab/*/*
 /stimuli_matlab/*.mat
-
+/stimuli_matlab/*.bmp
+/stimuli_matlab/finalstim/
+/stimuli_matlab/01greenback/
 
 
 

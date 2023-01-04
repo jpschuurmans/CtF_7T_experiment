@@ -44,8 +44,8 @@ def keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught):
         rt = (response_time - catchStart)*1000
         caught = 1
         print(f'Reactiontime is {int(rt)} ms' )
-    else:
-        rt = 'NaN'
+    elif not keys == []:
+        escape_check(keys,win,logfile,eventfile)
     return rt, caught 
 
 def load_txt_as_dict(path):
@@ -183,9 +183,8 @@ class makeSequences(object):
                 catchtrials = random.sample(range(1,int(nPositions/2)), 2) + random.sample(range(int(nPositions/2),int(nPositions-1)), 2)
                 row = []
                 tmp = copy.deepcopy(allPosi)
-                for elem in tmp:
-                    if elem in jittertrials:
-                        tmp.remove(elem)
+                for elem in jittertrials:
+                    tmp = [i for i in tmp if i != elem]
                 for trial in range(nStim):
                     pick = np.random.choice(tmp)
                     if pick in row:
@@ -195,9 +194,9 @@ class makeSequences(object):
                         if elem == pick:
                             tmp.remove(elem)
                 if block == 0:
-                    blockSeq = row
-                    jittSeq = jittertrials
-                    catchSeq = catchtrials
+                    blockSeq = copy.deepcopy(row)
+                    jittSeq = copy.deepcopy(jittertrials)
+                    catchSeq = copy.deepcopy(catchtrials)
                 else:
                     blockSeq = np.vstack([blockSeq, row])
                     jittSeq = np.vstack([jittSeq, jittertrials])
@@ -216,7 +215,14 @@ class makeSequences(object):
                 randomise = True
             else:
                 randomise = False
-        self.stimSeq = blockSeq
+        # for every condition, shuffle the row order and append
+        stimSeq = []
+        for condition in range(int(nBlockPerCond)):
+            shufSeq = copy.deepcopy(blockSeq)
+            rnd.shuffle(shufSeq)
+            stimSeq.append(shufSeq)
+        
+        self.stimSeq = stimSeq
         self.jittSeq = jittSeq
         self.catchSeq = catchSeq
         
@@ -252,14 +258,14 @@ class makeSequences(object):
         #self.stimSeq is sequence of stimuli within block
         runlist = {}
         for runnr,run in enumerate(self.blockSeq):
-            sequence_list = self.stimSeq[runnr]
             triallist = {}
             for blockpos,block in enumerate(run):
+                sequence_list = self.stimSeq[block][runnr]
                 block_info = self.conditions[str(block)]
                 bg = int(self.conditionList[block][runnr] + 1)
                 block_list = {}
                 for trialpos,trialnr in enumerate(self.PositionList):
-                    if trialnr in self.catchSeq[runnr]:
+                    if trialnr in self.catchSeq[run][blockpos]:
                         catch = 1
                         col = colourChange
                     else:
@@ -281,8 +287,7 @@ class makeSequences(object):
                     block_list[f'trial{trialpos}'] = {
                                         'block' : block,
                                         'blockpos' : blockpos,
-                                        'trialno' : trialnr,
-                                        'trialpos' : trialpos,
+                                        'trial' : trialnr,
                                         'conditionName' : f'vis{block_info["type"]}_dur{block_info["dur"]}',
                                         'SF' : block_info['sf'],
                                         'visibility' : block_info['type'],
@@ -290,15 +295,15 @@ class makeSequences(object):
                                         'trialStart' : None,
                                         'trialDur' : None,
                                         'stimDur' : None,
-                                        'maskDur' : None,
                                         'nframes' : str(int(int(block_info['dur'])/framelength)),
+                                        'maskDur' : None,
                                         'face' : facestim,
                                         'mask' : mask,
                                         'background' : f'BG{bg}.bmp',
-                                        'catchtrial' : catch,
-                                        'colour' : col,
                                         'jittertrial' : jittertrial,
+                                        'catchtrial' : catch,
                                         'rt' : None,
+                                        'colour' : col,
                                         'stim_path' : face_path,
                                         'mask_path' : mask_dir,
                                         'back_path' : back_path}

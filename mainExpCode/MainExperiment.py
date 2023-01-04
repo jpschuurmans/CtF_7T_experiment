@@ -19,7 +19,7 @@ stim_path = f'{base_path}stimuli/'
 mask_path = f'{base_path}masks/'
 back_path = f'{base_path}background/'
 data_path = f'{base_path}data/'
-#save_path = f'{base_path}saved_images/' ####### for screenshotting a trial
+save_path = f'{base_path}saved_images/' ####### for screenshotting a trial
 
 #%% ===========================================================================
 # imports
@@ -47,7 +47,7 @@ screennr=2
 
 stimSize = 550
 
-typCond = ['75', '50', '25', '0']
+typCond = ['60', '35', '0']
 sfType = ['BB']
 durCond = ['50','75','100','150'] #### change however. 
 
@@ -114,6 +114,10 @@ endfixFr = int((fixStEn*1000)/framelength)
 language = exp_info['6. Prefered language'] 
 debugging = int(exp_info['7. Debugging'])
 
+if debugging == 1:
+    fixStEn = 1
+    fixDur = 1
+
 data_path_sub = data_path + exp_info['1. Subject (e.g. sub-00)'] + '/'
 # prepare log file to write the data
 if not os.path.isdir(data_path_sub):
@@ -141,7 +145,6 @@ info_file.close()
 sequences_pickle = f'{logname}_alltrials-list.pickle'
 
 if exp_info['4. Make sequence'] == 'yes':
-    ########################################################
     sequences = makeSequences(logname,typCond,sfType,durCond) # self.logname / self.typCond / self.sfType = sfType / self.durCond
     sequences.makeBlockSeq(nRuns) ## Making and saving the sequence of blocks within runs self.blockSeq
     sequences.makeBackSeq(nBack) # self.blockSeq
@@ -208,12 +211,16 @@ fix1=visual.Line(win,start=(-stimSize,-stimSize),end=(stimSize, stimSize),
                  pos=(0.0, 0.0),lineWidth=1.0,lineColor='black',units='pix')
 fix2=visual.Line(win,start=(-stimSize,stimSize),end=(stimSize, -stimSize),
                  pos=(0.0, 0.0),lineWidth=1.0,lineColor='black',units='pix')
+win.mouseVisible = False
 
 for instnr in range(1,3):
     instructions = textpage
     instructions.text = instructiontexts[f'inst{instnr}_{language}']
     instructions.draw()
     win.flip()
+    if debugging == 1:
+        win.getMovieFrame() ####### for screenshotting a trial
+        win.saveMovieFrames(f'{save_path}_instructions{instnr}_.bmp')
     check4key = list(instructiontexts[f'button{instnr}'])
     check4key.append('escape')
     keys = event.waitKeys(keyList=check4key)#core.wait(.1)
@@ -225,7 +232,7 @@ for instnr in range(1,3):
 #main experiment
 trialsReady = sequences.allRuns[f'run-{runnr}']
 
-win.mouseVisible = False
+
 
 #draw fixation
 fix1.setAutoDraw(True)
@@ -241,7 +248,7 @@ totalCatch = 0
 corrResp = 0
 catchStart = '' #so the code does not crash for keyCheck (only first call)
 caught = 1
-rt = 'NaN'
+rt = None
 
 for blocknr, block in enumerate(trialsReady):
     #start fixation
@@ -262,7 +269,7 @@ for blocknr, block in enumerate(trialsReady):
     if blocknr == 0: # first fixation has a different duration
         fixation_dur = fixStEn-1
     else:
-        fixation_dur = fixDur-1
+        fixation_dur = fixDur-1 
 
     while fixdur <= fixation_dur: # wait untill there is only 1 sec of fixation left
         fixNow = clock.getTime()
@@ -285,14 +292,19 @@ for blocknr, block in enumerate(trialsReady):
 
     print(f'fixation, dur: {round((fixEnd-fixStart)*1000)} ms, load dur: {round(loadTime*1000)} ms') 
     print(f'Block {blocknr} - vis{trial["visibility"]}_dur{trial["duration"]}')
+    if debugging == 1:
+        shot = 0 # for screenshotting
+    else:
+        shot = 1
     
     # ---------------------------------------------------------------------------------        
     #start trials
     for trialnr in trialsReady[block]:
         trial = trialsReady[block][trialnr]
-
+        
         eventfile_info['onset'] = str(fixEnd)
-        eventfile_info['trial_type'] = f'vis{trial["visibility"]}_dur{trial["duration"]}' 
+        trial_type = f'vis{trial["visibility"]}_dur{trial["duration"]}' 
+        eventfile_info['trial_type'] = trial_type
         
         backFr = trialFr-(int(trial['nframes']) + maskFr)
         
@@ -305,33 +317,45 @@ for blocknr, block in enumerate(trialsReady):
                 corrResp += 1
             caught = 0
             totalCatch += 1
+        if shot == 0:
+            win.getMovieFrame() ####### for screenshotting a trial
+            win.saveMovieFrames(f'{save_path}{trial_type}_fix_{trialnr}.bmp')
         
         for nFrames in range(int(trial['nframes'])): #stimulus
             toDraw[trialnr]['face'].draw()
             win.flip()
             rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
         afterStim = clock.getTime()
-        stimDur = afterStim - startTrial
-            
+        if shot == 0:
+            win.getMovieFrame() ####### for screenshotting a trial
+            win.saveMovieFrames(f'{save_path}{trial_type}_face_{trialnr}.bmp')
+        
         for nFrames in range(maskFr): # mask
             toDraw[trialnr]['mask'].draw()
             win.flip()
             rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
         afterMask = clock.getTime()
-        maskDur = afterMask - afterStim  
-            
+        if shot == 0:
+            win.getMovieFrame() ####### for screenshotting a trial
+            win.saveMovieFrames(f'{save_path}{trial_type}_mask_{trialnr}.bmp')
+        
         for nFrames in range(backFr): # background
             toDraw[trialnr]['background'].draw()
             win.flip()
             rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
         endTrial = clock.getTime()
-        trialDur = startTrial - endTrial  
-        
+        if shot == 0:
+            win.getMovieFrame() ####### for screenshotting a trial
+            win.saveMovieFrames(f'{save_path}{trial_type}_back{caught}.bmp')
+            if blocknr != 0:
+                shot = 1
+
         trial['trialStart'] = startTrial
-        trial['trialDur'] = trialDur
-        trial['stimDur'] = stimDur
-        trial['maskDur'] = maskDur
+        trial['trialDur'] = round((endTrial - startTrial) * 1000) 
+        trial['stimDur'] = round((afterStim - startTrial) * 1000)
+        trial['maskDur'] = round((afterMask - afterStim)*1000)
         trial['rt'] = rt
+        rt = None
         writer_log.writerow(trial)
 
     # end trials
@@ -426,7 +450,8 @@ win.flip()
 while not 'x' in event.getKeys():
     core.wait(0.1)
 
-print(f'time exp: {int(clock.getTime()/60)} min')
+timeExp = clock.getTime()
+print(f'time exp: {int(timeExp/60)} min ({int(timeExp)} sec)')
   
 logfile.close()
 eventfile.close()
