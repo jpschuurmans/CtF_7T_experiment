@@ -39,7 +39,6 @@ def keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught):
     keys = event.getKeys(keyList=keyList, timeStamped=clock)
     if not keys == [] and caught == 0:
         escape_check(keys,win,logfile,eventfile)  
-        last_response = keys[-1][0] # most recent response, first in tuple
         response_time = keys[-1][1]
         rt = (response_time - catchStart)*1000
         caught = 1

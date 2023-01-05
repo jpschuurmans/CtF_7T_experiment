@@ -16,6 +16,9 @@ import numpy as np
 import random
 import copy
 from PIL import Image
+import _pickle as pickle
+import itertools
+import csv
 
 #%% =============================================================================
 # Experimental settings for 1 run
@@ -30,10 +33,11 @@ blockDur = 10 # Duration of block in sec
 fixDur = 10 # Duration of fixation in sec (fix after every block)
 fixStEn = 12 # Duration of fixation at begin/end of run in ms
 
+
 trPerBlock = 10 #nr of trials per block
 
-trialDur = 0.5 # Durations of trials defined in ms
-isi = 0.5 #duration of inter stimulus 
+trialDur = 500 # Durations of trials defined in ms
+isi = 500 #duration of inter stimulus 
 
 colourChange = (1.0, 1.0, 0.8)
 
@@ -41,7 +45,7 @@ colourChange = (1.0, 1.0, 0.8)
 # paths
 basefolder = '' 
 #commented out, this is just for testing in Spyder
-#basefolder = 'C:\\Users\\jolien\\Documents\\3T_RPinV1\\recurrentSF_3T_CodeRepo\\locExpCode\\' 
+basefolder = 'C:/Users/Adminuser/Documents/04_CtF-7T/Experiment/locExpCode/'
 
 stimPath = basefolder + 'stimuli'
 dataPath = basefolder + 'data'
@@ -49,14 +53,28 @@ dataPath = basefolder + 'data'
 #%% =============================================================================
 # in case we need to shut down the expt
 
-def esc():
-    if 'escape' in last_response:
-        logfile.close()
-        eventfile.close()
-        win.mouseVisible = True
-        win.close()
-        core.quit
 
+def escape_check(keys,win,logfile,eventfile):
+    if keys != []:
+        # close window and logfile if escape is pressed
+        if 'escape' in keys[0]:
+            win.close()
+            logfile.close()
+            eventfile.close()
+            core.quit()
+
+def keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught):     
+    
+    keys = event.getKeys(keyList=keyList, timeStamped=clock)
+    if not keys == [] and caught == 0:
+        escape_check(keys,win,logfile,eventfile)  
+        response_time = keys[-1][1]
+        rt = (response_time - catchStart)*1000
+        caught = 1
+        print(f'Reactiontime is {int(rt)} ms' )
+    elif not keys == []:
+        escape_check(keys,win,logfile,eventfile)
+    return rt, caught 
 
 #%% =============================================================================
 # Store info about the experiment session
@@ -64,7 +82,9 @@ def esc():
 # Get subject name, gender, age, handedness through a dialog box
 expName = 'Recurrent face processing in V1'
 expInfo = {
-        'Participant ID': ''
+        'Participant ID': '',
+        'Run' : ('01','02'),
+        'Screen' : ('BOLD', 'Dell'),
         }    
 
 dlg = gui.DlgFromDict(dictionary=expInfo, title=expName)
@@ -77,178 +97,222 @@ if dlg.OK == False:
 expInfo['date'] = data.getDateStr()
 expInfo['expName'] = expName
 
+run = expInfo['Run']
+
+if expInfo['Screen'] == 'BOLD':
+    frameRate = 120
+    scrsize = [1920, 1080]
+elif expInfo['Screen'] == 'Dell':
+    frameRate = 60
+    scrsize = [1920, 1200]
+
+framelength = 1000/(float(frameRate))
+trialFr = round(trialDur/framelength)
+isiFr = round(isi/framelength)
+
 # Make sure there is a path to write away the data
 if not os.path.isdir(dataPath):
     os.makedirs(dataPath)
 
-# make a text file to save data with 'comma-separated-values'
-eventName = expInfo['Participant ID'] + '_task-funcLoc__events.csv'
-eventFname = os.path.join(dataPath, eventName)
 
-dataName = expInfo['Participant ID'] + '_faceLoc_' + expInfo['date'] + '.csv'
-dataFname = os.path.join(dataPath, dataName)
-
-logfile = open(dataFname, 'w')
-logfile.write('BlockNumber, TrialNumber, StimulusType, ImageName, StimOnset, StimOffset, CatchTrial, Response, ResponseTime \n')
-
-eventfile = open(eventFname, 'w')
-eventfile.write('onset, duration, trial_type\n')
+keyList = ['b','y','g','r','e','w','n','d','escape']
 
 #%% =============================================================================
+sequences_pickle = f'{dataPath}/{expInfo["Participant ID"]}fLoc_alltrials-list.pickle'
+
 # create stimuli
-
-#get all stimuli from the folder
-stimPathList = glob.glob(os.path.join(stimPath,'*.bmp'))
-
-#Check if all images exist
-if not len(stimPathList) == (nStim*nCond):
-    raise Exception('Images not complete')
-
-#the extention of the used images is:
-item01 =stimPathList[1]
-imExt = item01[-4:]
-lenStimName = len(item01[len(stimPath)+1:])
-
-#create a list with the stimulus names
-stimName=[]
-for image in stimPathList:
-    stimName.append(image[-lenStimName:])
-stimName.sort()
-
-#split list for all conditions
-w=0
-v=0
-condList=[]
-for unit in conditions:
-    sliceStimList = slice(w,w+nStim,1) 
-    stimListThisCon = stimName[sliceStimList]
-    w += nStim
-        
-    #shuffle +append shuffeled. softcoded, but should be now: 3 times
-    #(6 blocks per cond, 10 trials per block, and 20 unique stimuli in total --> 20*3)
-    repTimes = int((nBlocks*trPerBlock)/nStim)
-    shufStimList = []
-    for shuff in range(repTimes):
-        rnd.shuffle(stimListThisCon)
-        toAdd = list(stimListThisCon)
-        shufStimList.extend(toAdd)
+if run == '01': 
+    print('Making sequence..')
+    #get all stimuli from the folder
+    stimPathList = glob.glob(os.path.join(stimPath,'*.bmp'))
     
-    #splitting the 60 trials (nBlocks*trPerBlock) in 6 blocks (nBlock),
-    u=0
-    for num in list(range(1,nBlocks+1)):
-        sliceTrials = slice(u,u+10,1)
-        trialsCurrCon = shufStimList[sliceTrials]
-        condList.append(trialsCurrCon)
-        u += 10
-        v += 1
-
-#make a list for the nr of blocks
-#making sure that same conditions never follow eachother
-#and some conditions dont follow a specific condition more often than others
-blockList = []
-cond = copy.deepcopy(conditions)
-posCombi = np.zeros((nCond,nCond))
-step = nCond-1
-for num in range(nBlocks):
-    print(str(num))
-    rnd.shuffle(cond)
-    restart = True
-    while restart:
-        temPosCombi = copy.deepcopy(posCombi)
-        for time in range(step):
-            num1 = cond[time]-1
-            num2 = cond[time+1]-1
-            if num1 == num2 or temPosCombi[num1,num2] == 2:
-                rnd.shuffle(cond)
-                temPosCombi = copy.deepcopy(posCombi)
-                break
-            elif time == 4:
-                if blockList == []:
-                    toAdd = copy.deepcopy(cond)
-                    blockList.extend(toAdd)
-                    restart = False
-                elif blockList[-1] == cond[0]: 
+    #Check if all images exist
+    if not len(stimPathList) == (nStim*nCond):
+        raise Exception('Images not complete')
+    
+    #the extention of the used images is:
+    item01 =stimPathList[1]
+    imExt = item01[-4:]
+    lenStimName = len(item01[len(stimPath)+1:])
+    
+    #create a list with the stimulus names
+    stimName=[]
+    for image in stimPathList:
+        stimName.append(image[-lenStimName:])
+    stimName.sort()
+    
+    #split list for all conditions
+    w=0
+    v=0
+    condList=[]
+    for unit in conditions:
+        sliceStimList = slice(w,w+nStim,1) 
+        stimListThisCon = stimName[sliceStimList]
+        w += nStim
+            
+        #shuffle +append shuffeled. softcoded, but should be now: 3 times
+        #(6 blocks per cond, 10 trials per block, and 20 unique stimuli in total --> 20*3)
+        repTimes = int((nBlocks*trPerBlock)/nStim)
+        shufStimList = []
+        for shuff in range(repTimes):
+            rnd.shuffle(stimListThisCon)
+            toAdd = list(stimListThisCon)
+            shufStimList.extend(toAdd)
+        
+        #splitting the 60 trials (nBlocks*trPerBlock) in 6 blocks (nBlock),
+        u=0
+        for num in list(range(1,nBlocks+1)):
+            sliceTrials = slice(u,u+10,1)
+            trialsCurrCon = shufStimList[sliceTrials]
+            condList.append(trialsCurrCon)
+            u += 10
+            v += 1
+    
+    #make a list for the nr of blocks
+    #making sure that same conditions never follow eachother
+    #and some conditions dont follow a specific condition more often than others
+    blockList = []
+    cond = copy.deepcopy(conditions)
+    posCombi = np.zeros((nCond,nCond))
+    step = nCond-1
+    for num in range(nBlocks):
+        rnd.shuffle(cond)
+        restart = True
+        while restart:
+            temPosCombi = copy.deepcopy(posCombi)
+            for time in range(step):
+                num1 = cond[time]-1
+                num2 = cond[time+1]-1
+                if num1 == num2 or temPosCombi[num1,num2] == 2:
                     rnd.shuffle(cond)
                     temPosCombi = copy.deepcopy(posCombi)
                     break
-                else:
-                    toAdd = copy.deepcopy(cond)
-                    blockList.extend(toAdd)
-                    restart = False
-            temPosCombi[num1,num2] += 1
-        posCombi = copy.deepcopy(temPosCombi)
-
-
-
-
-#get all 1... replace by 123456
-#get all 2... replace by 789101112
-#etc
-x = len(blockList)-1
-list.reverse(conditions)
-for cond in conditions:
-    i = 0
-    for num in blockList:
-        if num == cond:
-            blockList[i] = x
-            x -= 1
-        i += 1
-
-num1=blockList[24]-1
-num2=blockList[25]-1
-
-
-#make 1 big dictionary list
-#append10 trials per condition in the order of the shuffled conditon list.
-#et voila, un list des trials
-
-r=0
-s=1
-allTrialsOrder = []
-for blocks in blockList:
-    blockNr = blockList[r]
-    trials = condList[blockNr]
-    q=0
+                elif time == 4:
+                    if blockList == []:
+                        toAdd = copy.deepcopy(cond)
+                        blockList.extend(toAdd)
+                        restart = False
+                    elif blockList[-1] == cond[0]: 
+                        rnd.shuffle(cond)
+                        temPosCombi = copy.deepcopy(posCombi)
+                        break
+                    else:
+                        toAdd = copy.deepcopy(cond)
+                        blockList.extend(toAdd)
+                        restart = False
+                temPosCombi[num1,num2] += 1
+            posCombi = copy.deepcopy(temPosCombi)
     
-    # decide which trials will be catch trials
-    # 2 per block, one in first half other in second half
-    catchList = list(np.zeros(int(trPerBlock/2)))
-    catchList[0]=1
-    random.shuffle(catchList)
-    while catchList[0] == 1:
-        random.shuffle(catchList)
-    toAdd = copy.deepcopy(catchList)
-    random.shuffle(toAdd)
-    catchList.extend(toAdd)
     
-    for amoun in trials:
-        currTrial = trials[q]
-        allTrialsOrder.append({'blockNr' : r+1,
-                               'trialNr': s,
-                               'condName': currTrial[0:8],
-                               'imageName': currTrial,
-                               'catchTrial': catchList[q]})
-        q += 1
-        s += 1
-    r += 1
+    
+    
+    #get all 1... replace by 123456
+    #get all 2... replace by 789101112
+    #etc
+    x = len(blockList)-1
+    list.reverse(conditions)
+    for cond in conditions:
+        i = 0
+        for num in blockList:
+            if num == cond:
+                blockList[i] = x
+                x -= 1
+            i += 1
+    
+    num1=blockList[24]-1
+    num2=blockList[25]-1
+    
+    
+    #make 1 big dictionary list
+    #append10 trials per condition in the order of the shuffled conditon list.
+    #et voila, un list des trials
+    
+    trialsReady = {}
+    for blockid, blocks in enumerate(blockList):
+        allTrialsOrder = []
+        blockNr = blockList[blockid]
+        trials = condList[blockNr]
         
+        # decide which trials will be catch trials
+        # 2 per block, one in first half other in second half
+        catchList = list(np.zeros(int(trPerBlock/2)))
+        catchList[0]=1
+        random.shuffle(catchList)
+        while catchList[0] == 1:
+            random.shuffle(catchList)
+        toAdd = copy.deepcopy(catchList)
+        random.shuffle(toAdd)
+        catchList.extend(toAdd)
+        
+        for trialid, amoun in enumerate(trials):
+            currTrial = trials[trialid]
+            allTrialsOrder.append({'blockNr' : blocks,
+                                   'trialNr': trialid,
+                                   'condName': currTrial[0:8],
+                                   'imageName': currTrial,
+                                   'stimOnset' : '',
+                                   'stimOffset' : '',
+                                   'stimDur' : '',
+                                   'catchTrial': catchList[trialid],
+                                   'rt' : ''})
+        trialsReady[f'block-{blockid}'] = allTrialsOrder
+    
+    ###### pickle    
+    with open(sequences_pickle, 'wb') as file:
+        pickle.dump(trialsReady, file)
+        
+    blocks = dict(itertools.islice(trialsReady.items(), 0 ,int(len(nBlocks*conditions)/2)))
+    
+elif run == '02':
+    #load triallist dict (unpickle it)
+    with open(sequences_pickle, 'rb') as file:
+        trialsReady = pickle.load(file)
+     
+    blocks = dict(itertools.islice(trialsReady.items(), int(len(nBlocks*conditions)/2),len(nBlocks*conditions)))
 
-trialsReady = data.TrialHandler(allTrialsOrder, nReps=1, method='sequential',
-                                originPath=stimPath)
+
+#%% =============================================================================
+# make a text file to save data with 'comma-separated-values'
+# open log file
+dataName = f'{dataPath}/{expInfo["Participant ID"]}_faceLoc_run-{run}_{expInfo["date"]}.csv'
+logfile = open(dataName,'a',encoding='UTF8', newline='')
+
+# write header if it is the first session
+header_names = list(trialsReady[f'block-0'][0].keys())
+writer_log = csv.DictWriter(logfile, fieldnames=header_names)
+writer_log.writeheader()
+#logfile.close()
+fixTrial = copy.deepcopy(trialsReady[f'block-0'][0]) # to save fixation info
+fixTrial['blockNr'] = 'Fixation'
+fixTrial['trialNr'] = 0
+fixTrial['condName'] = 'Fixation'
+fixTrial['imageName'] = ''
+fixTrial['catchTrial'] = ''
+
+
+eventfile_info = {
+    'onset' : '',
+    'duration' : '',
+    'trial_type' : ''}
+
+# make a event file to save data with 'comma-separated-values'
+eventName = f'{dataPath}/{expInfo["Participant ID"]}_task-funcLoc_run-{run}_events.csv'
+eventfile = open(eventName, 'a',encoding='UTF8', newline='')
+header_names = list(eventfile_info.keys())
+writer_event = csv.DictWriter(eventfile, fieldnames=header_names)
+writer_event.writeheader()
+#eventfile.close()
 
 #%% =============================================================================
 
-scrsize = (1920,1080)
-
 win = visual.Window(size=scrsize, color='grey', units='pix', fullscr=True) 
-frameRate = win.getActualFrameRate()
-print('framerate is' , frameRate)
-#win.close()
 
-instruct1 = 'During the experiment you\'ll see images appearing on the screen. \nPress a button as soon as you see the colour of the image change.\n\nIt is important to fixate on the fixation dot in the middle of the screen.\n\nPress a button to continue.. (buttonbox key = 1)'
+instruct1 = 'During the experiment you\'ll see images appearing on the screen. \nPress a button as soon as you see the colour of the image turns slightly blue.\n\nIt is important to fixate on the fixation cross in the middle of the screen.\n\nPress a button to continue..'
 instruct1 = visual.TextStim(win, height=32, text=instruct1)
-instruct2 = 'The experiment is about to start!\nWaiting for scanner..\n(trigger = s)'
+instruct2 = 'The experiment is about to start!\nWaiting for scanner..'
 instruct2 = visual.TextStim(win, height=32, text=instruct2)
+
+
    
 #create fixation cross
 fix1=visual.Line(win,start=(-500,-500),end=(500, 500),
@@ -256,138 +320,117 @@ fix1=visual.Line(win,start=(-500,-500),end=(500, 500),
 fix2=visual.Line(win,start=(-500,500),end=(500, -500),
                  pos=(0.0, 0.0),lineWidth=1.0,lineColor='black',units='pix')
 
+win.mouseVisible = False
+   
 instruct1.draw()
 win.flip()
-while not '1' in event.getKeys():
-    core.wait(0.1)
+keys = event.waitKeys(keyList=keyList)
+escape_check(keys,win,logfile,eventfile)
 
 instruct2.draw()
 win.flip()
-while not 's' in event.getKeys():
-    core.wait(0.1)
+keys = event.waitKeys(keyList=['t','escape'])
+escape_check(keys,win,logfile,eventfile)
 
-# =============================================================================
+
+#%% =============================================================================
 # start stopwatch clock
 clock = core.Clock()
-clock.reset()
-
-expt_time_elapsed = clock.getTime()
-calc_baseline = fixStEn - expt_time_elapsed
-
-# =============================================================================
-# clear any previous presses/escapes
-last_response = ''; response_time = ''
-
-esc() # in case we need to shut down the expt
-
-# =============================================================================
 
 fix1.setAutoDraw(True)
 fix2.setAutoDraw(True)
-win.mouseVisible = False
 
-for nFrames in range(720): #12sec
+
+fixStart = clock.getTime()
+for nFrames in range(int(((fixStEn)*1000)/framelength)): #12sec
+    keys = event.getKeys()
+    escape_check(keys,win,logfile,eventfile)
     win.flip()
-toSave = 'StartFix,NA,StartFix,fix,' + str(expt_time_elapsed) +','+ str(clock.getTime()) + ',NA, NA, NA\n'
-logfile.write(toSave)
-toSave2 = str(expt_time_elapsed) +','+ str(clock.getTime()-expt_time_elapsed) + ',fixation\n'
-eventfile.write(toSave2)
 
-trialCount = 1
-trialInBlock = 0
-totCaught = 0
-fixEndtime = clock.getTime()
+fixTrial['stimOnset'] = fixStart; fixTrial['stimOffset'] = clock.getTime(); fixTrial['stimDur'] = clock.getTime()-fixStart;
+writer_log.writerow(fixTrial)
+eventfile_info['onset'] = fixStart; eventfile_info['duration'] = clock.getTime(); eventfile_info['trial_type'] = 'fixation'
+writer_event.writerow(eventfile_info)
 
-for trial in trialsReady:
-    trialOnsetTime = clock.getTime()
-    
-    if trial['catchTrial'] == True:
-        col = colourChange
-    else:
-        col = (1.0, 1.0, 1.0)   
+
+response = []
+corrResp = 0
+catchStart = '' #so the code does not crash for keyCheck (only first call)
+caught = 1
+rt = None
+
+for blocknr, block in enumerate(blocks): 
+    print(f'block {blocknr} - condition: {blocks[block][0]["condName"]}')
+    blockStart = clock.getTime()
+    for trial in blocks[block]:    
+        rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
         
-    im1 = Image.open(os.path.join(stimPath, trial['imageName']))
-    bitmap = visual.ImageStim(win, size=[500,500],image=im1,color=col)
-    
-# =============================================================================
-
-    esc() # in case we need to shut down the expt
-
-# =============================================================================
-    for nFrames in range(30): #500ms trail
-        bitmap.draw()
-        win.flip()            
-    for nFrames in range(30): #500ms trail
-        win.flip()
-        
-    # get response and it's associated timestamp as a list of tuples: (keypress, time)
-    response = event.getKeys(timeStamped=clock)
-    caught = 1
-    esc()
-    
-    if not response:
-        response = [('No_Response', -1)]
-        caught = 0
-        
-    if trial['catchTrial'] == True and caught == True:
-        totCaught += 1
-        print('click!')
-        
-    last_response = response[-1][0] # most recent response, first in tuple
-    response_time = response[-1][1] # most recent response, second in tuple
-
-    condition = trial['condName']; whichBlock = trial['blockNr']; imName = trial['imageName']; catTrial = trial['catchTrial']
-    toSave = str(whichBlock) +','+ str(trialCount) +','+ str(condition) +','+ str(imName) +','+ str(trialOnsetTime) +','+ str(clock.getTime()) +','+ str(catTrial)  +','+ str(last_response)  +','+ str(response_time)  +'\n' 
-    logfile.write(toSave)
-
-    print('trial: ', trialCount, ', trial type: ', condition)
-    if trialCount % 10 == 0:
         trialOnsetTime = clock.getTime()
         
-        toSave2 = str(fixEndtime) +','+ str(trialOnsetTime-fixEndtime) +','+  str(condition) + '\n'
-        eventfile.write(toSave2)
-        
-        for nFrames in range(600): #10sec
+        if trial['catchTrial'] == True:
+            col = colourChange
+            catchStart = clock.getTime()
+            if caught == 1:
+                corrResp += 1
+            caught = 0
+        else:
+            col = (1.0, 1.0, 1.0)   
+            
+        im1 = Image.open(os.path.join(stimPath, trial['imageName']))
+        bitmap = visual.ImageStim(win, size=[500,500],image=im1,color=col)
+    
+        for nFrames in range(trialFr): #500ms trail
+            bitmap.draw()
+            win.flip()            
+        for nFrames in range(isiFr): #500ms trail
             win.flip()
-
-        condition = trial['condName']
-        whichBlock = trial['blockNr']
-        fixEndtime = clock.getTime()
-        toSave = 'Fixation, NA, Fixation, fix,' + str(trialOnsetTime) +','+ str(fixEndtime) +','+ str(last_response) +','+ str(response_time) + '\n'
-        logfile.write(toSave)
-        toSave2 = str(trialOnsetTime) +','+ str(clock.getTime()-trialOnsetTime) + ',fixation\n'
-        eventfile.write(toSave2)
-
-    else:
-        trialInBlock += 1
+            
+        # get response and it's associated timestamp as a list of tuples: (keypress, time)
+        rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
         
-    trialCount  += 1
+        trial['stimOnset'] = trialOnsetTime; trial['stimOffset'] = clock.getTime();  fixTrial['stimDur'] = clock.getTime()-trialOnsetTime; trial['rt'] = rt; rt = None
+        writer_log.writerow(trial)
         
-endExpTime = clock.getTime()
-for nFrames in range(120): #(it already did 10, so 2sec left)
+    ### fixation    
+    eventfile_info['onset'] = blockStart; eventfile_info['duration'] = clock.getTime()-blockStart; eventfile_info['trial_type'] = trial['condName']
+    writer_event.writerow(eventfile_info)
+
+    fixStart = clock.getTime()
+
+    for nFrames in range(int((fixDur*1000)/framelength)): #10sec
+        rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
+        win.flip()
+    
+    fixTrial['stimOnset'] = fixStart; fixTrial['stimOffset'] = clock.getTime(); fixTrial['stimDur'] = clock.getTime()-fixStart;
+    writer_log.writerow(fixTrial)
+    eventfile_info['onset'] = fixStart; eventfile_info['duration'] = clock.getTime()-fixStart; eventfile_info['trial_type'] = 'fixation'
+    writer_event.writerow(eventfile_info)
+
+fixStart = clock.getTime()
+for nFrames in range(int(((fixStEn-fixDur)*1000)/framelength)): #(it already did 10, so 2sec left)
     win.flip()
-toSave = 'EndFixation, NA, EndFixation, fix,' + str(endExpTime) +','+ str(clock.getTime()) +','+ str(last_response) +','+ str(response_time) + '\n'
-logfile.write(toSave)
-toSave2 = str(endExpTime) +','+ str(clock.getTime()-endExpTime) + ',fixation\n'
-eventfile.write(toSave2)
+
+fixTrial['stimOnset'] = fixStart; fixTrial['stimOffset'] = clock.getTime(); fixTrial['stimDur'] = clock.getTime()-fixStart;
+writer_log.writerow(fixTrial)
+eventfile_info['onset'] = fixStart; eventfile_info['duration'] = clock.getTime()-fixStart; eventfile_info['trial_type'] = 'fixation'
+writer_event.writerow(eventfile_info)
+
 
 fix1.setAutoDraw(False)
 fix2.setAutoDraw(False)
 win.mouseVisible = True
-endExperiment = clock.getTime()
-totalTimeExp = endExperiment - expt_time_elapsed
 
-maxCat = (len(allTrialsOrder)/trPerBlock)*2
-endScore = (100/maxCat)*totCaught
-toSave = str(endScore) + 'percent of colour changes detected\nTotal experiment time: ' + str(round(totalTimeExp)) + ' minutes'
-logfile.write(toSave)
+timeExp = clock.getTime()
+print(f'time exp: {int(timeExp/60)} min ({int(timeExp)} sec)')
 
+maxCat = (int(len(nBlocks*conditions)/2))*2
+endScore = (100/maxCat)*corrResp
 
-instruct3 = 'Done!\n\nYou\'ve detected ' + str(endScore) +'% of the colour changes, thanks!\n\nPress \'x\' to close the screen.'
+instruct3 = f'Run {run}/02 done!\n\nYou\'ve detected {round(endScore)}% of the colour changes, great!'
 instruct3 = visual.TextStim(win, height=32, text=instruct3)
 instruct3.draw()
 win.flip()
-while not 'x' in event.getKeys():
+while not 'escape' in event.getKeys():
     core.wait(0.1)
     
 # Quit the experiment (closing the window)

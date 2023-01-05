@@ -106,9 +106,9 @@ elif exp_info['5. Screen'] == 'Dell':
     screensize = [1920, 1200]
     
 framelength = 1000/(float(framerate))
-maskFr = int(maskDur/framelength)
-trialFr = int(trialDur/framelength)
-endfixFr = int((fixStEn*1000)/framelength)
+maskFr = round(maskDur/framelength)
+trialFr = round(trialDur/framelength)
+endfixFr = round((fixStEn*1000)/framelength)
 
 
 language = exp_info['6. Prefered language'] 
@@ -242,9 +242,7 @@ fix2.setAutoDraw(True)
 clock = core.Clock()
 
 # clear any previous presses/escapes
-last_response = ''; response_time = ''; reactionTime = '';
 response = []
-totalCatch = 0
 corrResp = 0
 catchStart = '' #so the code does not crash for keyCheck (only first call)
 caught = 1
@@ -276,7 +274,7 @@ for blocknr, block in enumerate(trialsReady):
         fixdur = fixNow-fixStart
         rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
          
-    for nFrames in range(60):  #last second of fixation start flipping, to prevent frame drops later on
+    for nFrames in range(int((60000)/framelength)):  #last second of fixation start flipping, to prevent frame drops later on
         win.flip()  
         rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
         
@@ -316,7 +314,6 @@ for blocknr, block in enumerate(trialsReady):
             if caught == 1:
                 corrResp += 1
             caught = 0
-            totalCatch += 1
         if shot == 0:
             win.getMovieFrame() ####### for screenshotting a trial
             win.saveMovieFrames(f'{save_path}{trial_type}_fix_{trialnr}.bmp')
@@ -437,11 +434,9 @@ fix1.setAutoDraw(False)
 fix2.setAutoDraw(False)
 win.mouseVisible = True
 
-totExpDur = clock.getTime()
-percCorr = (100/totalCatch)*(corrResp-1)
 
-toSave = f'Total run duration: {totExpDur}'
-logfile.write(toSave)
+timeExp = clock.getTime()
+print(f'time exp: {int(timeExp/60)} min ({int(timeExp)} sec)')
 
 instruc03 = f'This is the end of run {int(runnr+1)} out of {nRuns}\n\nYou have a score of {round(percCorr)}% \nThank you for paying attention :)\n\nPress \'x\' to close the screen.'
 instruc03 = visual.TextStim(win, color='black',height=32,text=instruc03)
@@ -450,8 +445,7 @@ win.flip()
 while not 'x' in event.getKeys():
     core.wait(0.1)
 
-timeExp = clock.getTime()
-print(f'time exp: {int(timeExp/60)} min ({int(timeExp)} sec)')
+
   
 logfile.close()
 eventfile.close()
