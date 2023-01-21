@@ -47,7 +47,6 @@ screennr=2
 
 stimSize = 550
 
-typCond = ['60', '35', '0']
 sfType = ['BB']
 durCond = ['50','75','100','150'] #### change however. 
 
@@ -76,7 +75,7 @@ trialDur = 416.666667 # ms
 #%% ===========================================================================
 # monitor setup + subject info
 
-exp_name = 'Coarse-to-fine backward masking 7T'
+exp_name = 'Backward masking 7T'
 exp_info = {
         '1. Subject (e.g. sub-00)' : 'sub-',
         '2. Session' : ('ses-01','ses-02'),
@@ -115,29 +114,32 @@ language = exp_info['6. Prefered language']
 debugging = int(exp_info['7. Debugging'])
 
 if debugging == 1:
-    fixStEn = 1
-    fixDur = 1
+    fixStEn = 2
+    fixDur = 2
 
 data_path_sub = data_path + exp_info['1. Subject (e.g. sub-00)'] + '/'
 # prepare log file to write the data
 if not os.path.isdir(data_path_sub):
     os.makedirs(data_path_sub)
 logname = data_path_sub + exp_info['1. Subject (e.g. sub-00)']
+
+
+if exp_info['4. Make sequence'] == 'yes':
+    #####################################################
+    # run lower SNR code
+    # it should return 
+    # typCond = ['60', '35', '0'] 
     
-# save file with subject info
+# save file with subject info ############################## made some changes here. Check
 info_name = f'{logname}_subject-info.csv'
-info_file = open(info_name,'a',encoding='UTF8')
+info_file = open(info_name,'a',encoding='UTF8', newline='')
 runnr = int(int(exp_info['3. Run number']) -1)
 
-if runnr == 0:
-    header = ''
-    for key in exp_info:
-        header = header + key + ','
-    info_file.write(header + '\n')
-info = ''
-for key in exp_info:
-    info = info + exp_info[key] + ','
-info_file.write(info + '\n')
+# write header if it is the first session
+header_names = list(exp_info.keys())
+writer_log = csv.DictWriter(info_file, fieldnames=header_names)
+
+writer_log.writerow(exp_info)
 info_file.close()
 
 #%% ===========================================================================
@@ -200,7 +202,7 @@ writer_event.writeheader()
 #%% =============================================================================
 #window setup
 
-win = visual.Window(size=screensize, color='grey', units='pix', fullscr=True)
+win = visual.Window(size=screensize, color='grey', units='pix', fullscr=True, screen=screennr)
 instructiontexts = load_txt_as_dict(f'{base_path}instructions.txt')
 textpage = visual.TextStim(win, height=32, color= 'black')
 keyList = list(instructiontexts[f'button1'])
@@ -247,6 +249,7 @@ corrResp = 0
 catchStart = '' #so the code does not crash for keyCheck (only first call)
 caught = 1
 rt = None
+totalCatch = 0
 
 for blocknr, block in enumerate(trialsReady):
     #start fixation
@@ -274,7 +277,7 @@ for blocknr, block in enumerate(trialsReady):
         fixdur = fixNow-fixStart
         rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
          
-    for nFrames in range(int((60000)/framelength)):  #last second of fixation start flipping, to prevent frame drops later on
+    for nFrames in range(round((1000)/framelength)):  #last second of fixation start flipping, to prevent frame drops later on
         win.flip()  
         rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
         
@@ -310,6 +313,7 @@ for blocknr, block in enumerate(trialsReady):
         rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
         
         if trial['catchtrial'] == True: #if its a catchtrail, start the clock
+            totalCatch += 1
             catchStart = clock.getTime()
             if caught == 1:
                 corrResp += 1
@@ -437,6 +441,8 @@ win.mouseVisible = True
 
 timeExp = clock.getTime()
 print(f'time exp: {int(timeExp/60)} min ({int(timeExp)} sec)')
+
+percCorr = (100/totalCatch)*corrResp
 
 instruc03 = f'This is the end of run {int(runnr+1)} out of {nRuns}\n\nYou have a score of {round(percCorr)}% \nThank you for paying attention :)\n\nPress \'x\' to close the screen.'
 instruc03 = visual.TextStim(win, color='black',height=32,text=instruc03)

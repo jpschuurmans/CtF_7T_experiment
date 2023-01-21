@@ -34,6 +34,7 @@ ellipseCenter = find(MaskAlpha < MaskAlpha(1));
 %maskcontrast = 0.15; % mask had higher contrast for masking efficiency
 
 stimuli = {'mask' '60' '35' '0'}; %stimuli and mask
+stimuli = {'15' '25' '70' '80'}; %stimuli and mask
 
 %preallocate for speed
 finalstim_backpixLC = cell(backgrounds,length(stimuli)); %preallocate
@@ -72,8 +73,12 @@ for theback = 1:backgrounds % for all scrambled backgrounds
             % imshow(toblendim)
             
             % now we're combining the images
-            combim = (signalim*signal) + (toblendim*noise);
-            % imshow(combim)
+            if stimulus == '0'
+                combim = toblendim;
+            else
+                combim = (signalim*signal) + (toblendim*noise);
+            end
+                % imshow(combim)
             
             % normalising the face pixels of the image
             combim(facepixindex) = combim(facepixindex) - mean2(combim(facepixindex)); %normalize blend stim part 1
