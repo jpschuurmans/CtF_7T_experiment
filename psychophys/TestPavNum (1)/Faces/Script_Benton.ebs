@@ -1,0 +1,1391 @@
+'
+'
+'
+'	C:\Documents and Settings\u427419\Mes documents\helene\tests\TESTS ET NORMES\ATENA-F\Benton\Script_Benton.ebs
+'	Generated on: 3/22/2012	11:07:04
+'
+'
+'	This file generated with E-Studio interface.
+'	E-Prime Copyright © 2002 Psychology Software Tools.
+'	ALL RIGHTS RESERVED
+
+'	Legal use of this experiment script requires a full E-Prime or Runtime License.
+'
+'
+'	Author:
+'		Adélaïde de Heering
+'	Abstract:
+'		 
+'
+'
+'
+'
+
+Option CStrings On
+Dim ebContext as Context
+
+
+'--------------------------------------------------------------------------
+' Class Declarations
+'--------------------------------------------------------------------------
+
+
+
+'--------------------------------------------------------------------------
+'InitSlideStateDefaults
+'--------------------------------------------------------------------------
+Sub InitSlideStateDefaults(theSlideState As SlideState)
+
+	If theSlideState Is Nothing Then Exit Sub
+
+	theSlideState.X = "center"
+	theSlideState.Y = "center"
+	theSlideState.Width = "100%"
+	theSlideState.Height = "100%"
+	theSlideState.BackColor = CColor("white")
+	theSlideState.BackStyle = "opaque"
+	theSlideState.BorderColor = CColor("black")
+	theSlideState.BorderWidth = CLng("0")
+	theSlideState.XAlign = "center"
+	theSlideState.YAlign = "center"
+	theSlideState.ClearAfter = CLogical("No")
+	theSlideState.Enabled = CLogical("Yes")
+
+End Sub
+
+'--------------------------------------------------------------------------
+'InitSlideVisualStimDefaults
+'--------------------------------------------------------------------------
+Sub InitSlideVisualStimDefaults(theSlideVisualStim As SlideVisualStim)
+
+	If theSlideVisualStim Is Nothing Then Exit Sub
+
+	theSlideVisualStim.X = "center"
+	theSlideVisualStim.Y = "center"
+	theSlideVisualStim.Width = "25%"
+	theSlideVisualStim.Height = "25%"
+	theSlideVisualStim.ForeColor = CColor("black")
+	theSlideVisualStim.BackColor = CColor("white")
+	theSlideVisualStim.BackStyle = "opaque"
+	theSlideVisualStim.BorderColor = CColor("black")
+	theSlideVisualStim.BorderWidth = CLng("0")
+	theSlideVisualStim.XAlign = "center"
+	theSlideVisualStim.YAlign = "center"
+	theSlideVisualStim.AlignHorizontal = "center"
+	theSlideVisualStim.AlignVertical = "center"
+
+End Sub
+
+'--------------------------------------------------------------------------
+'InitSlideTextDefaults
+'--------------------------------------------------------------------------
+Sub InitSlideTextDefaults(theSlideText As SlideText)
+
+	If theSlideText Is Nothing Then Exit Sub
+
+	InitSlideVisualStimDefaults theSlideText
+
+	theSlideText.WordWrap = True
+	theSlideText.FontName = "Courier New"
+	theSlideText.FontSize = "18"
+	theSlideText.FontBold = CLogical("Yes")
+	theSlideText.FontItalic = CLogical("No")
+	theSlideText.FontUnderline = CLogical("No")
+	theSlideText.FontStrikeout = CLogical("No")
+
+End Sub
+
+'--------------------------------------------------------------------------
+'InitSlideImageDefaults
+'--------------------------------------------------------------------------
+Sub InitSlideImageDefaults(theSlideImage As SlideImage)
+
+	If theSlideImage Is Nothing Then Exit Sub
+
+	InitSlideVisualStimDefaults theSlideImage
+
+	theSlideImage.Stretch = CLogical("No")
+	theSlideImage.MirrorLeftRight = CLogical("No")
+	theSlideImage.MirrorUpDown = CLogical("No")
+	theSlideImage.UseSourceColorKey = CLogical("No")
+	theSlideImage.SourceColorKey = CColor("black")
+
+End Sub
+
+'--------------------------------------------------------------------------
+'InitSlideSoundBufferDefaults
+'--------------------------------------------------------------------------
+Sub InitSlideSoundBufferDefaults(theSoundBuffer As SoundBuffer)
+
+	If theSoundBuffer Is Nothing Then Exit Sub
+
+	theSoundBuffer.Loop = CLogical("No")
+	theSoundBuffer.StopAfter = CLogical("Yes")
+	theSoundBuffer.StartOffset = "0"
+	theSoundBuffer.StopOffset = "0"
+
+End Sub
+
+
+
+
+
+
+'--------------------------------------------------------------------------
+'InitImageDisplayDefaults
+'--------------------------------------------------------------------------
+Sub InitImageDisplayDefaults(theImageDisplay As ImageDisplay)
+
+	If theImageDisplay Is Nothing Then Exit Sub
+
+	theImageDisplay.X = "center"
+	theImageDisplay.Y = "center"
+	theImageDisplay.Width = "100%"
+	theImageDisplay.Height = "100%"
+	theImageDisplay.BackColor = CColor("black")
+	theImageDisplay.BackStyle = "opaque"
+	theImageDisplay.BorderColor = CColor("black")
+	theImageDisplay.BorderWidth = CLng("0")
+	theImageDisplay.XAlign = "center"
+	theImageDisplay.YAlign = "center"
+	theImageDisplay.AlignHorizontal = "center"
+	theImageDisplay.AlignVertical = "center"
+	theImageDisplay.ClearAfter = CLogical("No")
+	theImageDisplay.UseSourceColorKey = CLogical("No")
+	theImageDisplay.SourceColorKey = CColor("black")
+	theImageDisplay.MirrorLeftRight = CLogical("No")
+	theImageDisplay.MirrorUpDown = CLogical("No")
+	theImageDisplay.Stretch = CLogical("No")
+
+End Sub
+
+
+
+
+
+
+
+
+
+
+'--------------------------------------------------------------------------
+' Instance Declarations
+'--------------------------------------------------------------------------
+Dim Keyboard As KeyboardDevice
+Dim Mouse As MouseDevice
+Dim Display As DisplayDevice
+Dim Sound As SoundDevice
+Dim SessionProc As Procedure
+
+Dim Bloc1 As List
+
+Dim TrialProc As Procedure
+
+Dim Stimulus As Slide
+Dim StimulusEchoClients As EchoClientCollection
+Dim Stimulus_State As SlideState
+Dim Stimulus_SlideImage As SlideImage
+
+Dim Bloc3 As List
+
+Dim Blank500 As Slide
+Dim Blank500_State As SlideState
+
+Dim Bloc2 As List
+
+Dim Consignes1 As ImageDisplay
+Dim Consignes1EchoClients As EchoClientCollection
+
+Dim Consignes2 As ImageDisplay
+Dim Consignes2EchoClients As EchoClientCollection
+
+Dim Consignes3 As ImageDisplay
+Dim Consignes3EchoClients As EchoClientCollection
+
+Dim Consignes4 As ImageDisplay
+Dim Consignes4EchoClients As EchoClientCollection
+
+Dim Consignes5 As ImageDisplay
+Dim Consignes5EchoClients As EchoClientCollection
+
+Dim Consignes6 As ImageDisplay
+Dim Consignes6EchoClients As EchoClientCollection
+
+Dim Consignes7 As ImageDisplay
+Dim Consignes7EchoClients As EchoClientCollection
+
+
+
+'--------------------------------------------------------------------------
+' Package Declare Script
+'--------------------------------------------------------------------------
+
+
+
+'--------------------------------------------------------------------------
+' User Script
+'--------------------------------------------------------------------------
+
+
+
+'--------------------------------------------------------------------------
+' Package Global Script
+'--------------------------------------------------------------------------
+
+
+
+'--------------------------------------------------------------------------
+' Package Routines
+'--------------------------------------------------------------------------
+
+
+
+'--------------------------------------------------------------------------
+' Implementation
+'--------------------------------------------------------------------------
+Sub SessionProc_Run(c as Context)
+	
+	
+	Consignes1.InputMasks.Reset
+	
+	Consignes1EchoClients.RemoveAll
+	Consignes1.InputMasks.Add Keyboard.CreateInputMask("{ANY}", "", CLng(Consignes1.Duration), CLng("1"), ebEndResponseActionTerminate, CLogical("Yes"), "", "", "ResponseMode:All ProcessBackspace:Yes")
+
+	
+	Consignes1.Run
+	
+	
+	Consignes2.InputMasks.Reset
+	
+	Consignes2EchoClients.RemoveAll
+	Consignes2.InputMasks.Add Keyboard.CreateInputMask("{ANY}", "", CLng(Consignes2.Duration), CLng("1"), ebEndResponseActionTerminate, CLogical("Yes"), "", "", "ResponseMode:All ProcessBackspace:Yes")
+
+	
+	Consignes2.Run
+	
+	
+	Consignes3.InputMasks.Reset
+	
+	Consignes3EchoClients.RemoveAll
+	Consignes3.InputMasks.Add Keyboard.CreateInputMask("{ANY}", "", CLng(Consignes3.Duration), CLng("1"), ebEndResponseActionTerminate, CLogical("Yes"), "", "", "ResponseMode:All ProcessBackspace:Yes")
+
+	
+	Consignes3.Run
+	
+	
+	Consignes4.InputMasks.Reset
+	
+	Consignes4EchoClients.RemoveAll
+	Consignes4.InputMasks.Add Keyboard.CreateInputMask("{ANY}", "", CLng(Consignes4.Duration), CLng("1"), ebEndResponseActionTerminate, CLogical("Yes"), "", "", "ResponseMode:All ProcessBackspace:Yes")
+
+	
+	Consignes4.Run
+	
+	'''''''''''''''''''''''''''''''''''''''''''''
+	' InLine - ShowCursor BEGIN
+	'''''''''''''''''''''''''''''''''''''''''''''
+	'Make mouse cursor visible at run-time
+Mouse.ShowCursor true
+
+
+	'''''''''''''''''''''''''''''''''''''''''''''
+	' InLine - ShowCursor END
+	'''''''''''''''''''''''''''''''''''''''''''''
+	
+	Bloc1.Run c
+	
+	
+	Consignes5.InputMasks.Reset
+	
+	Consignes5EchoClients.RemoveAll
+	Consignes5.InputMasks.Add Keyboard.CreateInputMask("{ANY}", "", CLng(Consignes5.Duration), CLng("1"), ebEndResponseActionTerminate, CLogical("Yes"), "", "", "ResponseMode:All ProcessBackspace:Yes")
+
+	
+	Consignes5.Run
+	Bloc2.Run c
+	
+	
+	Consignes6.InputMasks.Reset
+	
+	Consignes6EchoClients.RemoveAll
+	Consignes6.InputMasks.Add Keyboard.CreateInputMask("{ANY}", "", CLng(Consignes6.Duration), CLng("1"), ebEndResponseActionTerminate, CLogical("Yes"), "", "", "ResponseMode:All ProcessBackspace:Yes")
+
+	
+	Consignes6.Run
+	Bloc3.Run c
+	
+	
+	Consignes7.InputMasks.Reset
+	
+	Consignes7EchoClients.RemoveAll
+	Consignes7.InputMasks.Add Keyboard.CreateInputMask("{ANY}", "", CLng(Consignes7.Duration), CLng("1"), ebEndResponseActionTerminate, CLogical("Yes"), "", "", "ResponseMode:All ProcessBackspace:Yes")
+
+	
+	Consignes7.Run
+
+	c.Log
+End Sub
+
+Sub TrialProc_Run(c as Context)
+	
+	'''''''''''''''''''''''''''''''''''''''''''''
+	' InLine - Init BEGIN
+	'''''''''''''''''''''''''''''''''''''''''''''
+	dim compteur as integer
+dim r1 as string
+dim r2 as string
+dim r3 as string
+dim RT as double
+RT =0
+compteur = 1
+c.setattrib "AC", 0 
+
+r1=" "
+r2=" "
+r3=" "
+
+	'''''''''''''''''''''''''''''''''''''''''''''
+	' InLine - Init END
+	'''''''''''''''''''''''''''''''''''''''''''''
+	
+	
+	''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	'	Label - Debut BEGIN
+	''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Debut:
+	If Err.Number = ebInputAccepted Then
+		Err.Clear
+		Resume DebutResume
+	ElseIf Err.Number <> 0 Then
+		'NOTE: If you receive a runtime error here, it
+		' is because a runtime error other than ebInputAccepted
+		' was thrown (ebInputAccepted for catching input masks that jump).
+		'You are encouraged to either handle the error so that
+		' it is not thrown in the future or will have to set up
+		' your own error handler, which will also need to take
+		' into account for any input masks that jump.
+		'
+		'Raise the error so the default error handler will show the message
+		Err.Raise Err.Number
+	End If
+
+DebutResume:
+
+	''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	'	Label - Debut END
+	''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+	
+	
+	Select Case Stimulus.ActiveState
+		Case "Default"
+
+
+			Set Stimulus_SlideImage = CSlideImage(Stimulus.States.Item("Default").Objects(1))
+			Stimulus_SlideImage.Filename = c.GetAttrib("A") &_ 
+				".bmp"
+			Stimulus_SlideImage.Load
+			Set Stimulus_SlideImage = Nothing
+
+			Set Stimulus_SlideImage = CSlideImage(Stimulus.States.Item("Default").Objects(2))
+			Stimulus_SlideImage.Filename = c.GetAttrib("F") &_ 
+				".bmp"
+			Stimulus_SlideImage.Load
+			Set Stimulus_SlideImage = Nothing
+
+			Set Stimulus_SlideImage = CSlideImage(Stimulus.States.Item("Default").Objects(3))
+			Stimulus_SlideImage.Filename = c.GetAttrib("D") &_ 
+				".bmp"
+			Stimulus_SlideImage.Load
+			Set Stimulus_SlideImage = Nothing
+
+			Set Stimulus_SlideImage = CSlideImage(Stimulus.States.Item("Default").Objects(4))
+			Stimulus_SlideImage.Filename = c.GetAttrib("E") &_ 
+				".bmp"
+			Stimulus_SlideImage.Load
+			Set Stimulus_SlideImage = Nothing
+
+			Set Stimulus_SlideImage = CSlideImage(Stimulus.States.Item("Default").Objects(5))
+			Stimulus_SlideImage.Filename = c.GetAttrib("C") &_ 
+				".bmp"
+			Stimulus_SlideImage.Load
+			Set Stimulus_SlideImage = Nothing
+
+			Set Stimulus_SlideImage = CSlideImage(Stimulus.States.Item("Default").Objects(6))
+			Stimulus_SlideImage.Filename = c.GetAttrib("B") &_ 
+				".bmp"
+			Stimulus_SlideImage.Load
+			Set Stimulus_SlideImage = Nothing
+
+			Set Stimulus_SlideImage = CSlideImage(Stimulus.States.Item("Default").Objects(7))
+			Stimulus_SlideImage.Filename = c.GetAttrib("Cible") &_ 
+				".bmp"
+			Stimulus_SlideImage.Load
+			Set Stimulus_SlideImage = Nothing
+	End Select
+
+	
+	Stimulus.InputMasks.Reset
+	
+	StimulusEchoClients.RemoveAll
+	Stimulus.InputMasks.Add Mouse.CreateInputMask("{ANY}", "", CLng(Stimulus.Duration), CLng("1"), ebEndResponseActionTerminate, CLogical("Yes"), "", "", "")
+
+	
+	Stimulus.Run
+	
+	c.SetAttrib "Stimulus.OnsetDelay", Stimulus.OnsetDelay
+	c.SetAttrib "Stimulus.OnsetTime", Stimulus.OnsetTime
+	c.SetAttrib "Stimulus.DurationError", Stimulus.DurationError
+	c.SetAttrib "Stimulus.RTTime", Stimulus.RTTime
+	c.SetAttrib "Stimulus.ACC", Stimulus.ACC
+	c.SetAttrib "Stimulus.RT", Stimulus.RT
+	c.SetAttrib "Stimulus.RESP", Stimulus.RESP
+	c.SetAttrib "Stimulus.CRESP", Stimulus.CRESP
+	
+	
+	'''''''''''''''''''''''''''''''''''''''''''''
+	' InLine - DoHitTest BEGIN
+	'''''''''''''''''''''''''''''''''''''''''''''
+	'Designate "theState" as the Default Slide State, which is the 
+'current, ActiveState on the Slide object "Stimulus"
+Dim theState as SlideState
+Set theState = Stimulus.States ("Default")
+
+Dim ptMouse As Point
+Dim strHit As String
+Dim rep As String
+dim nl as integer
+
+RT=RT+c.GetAttrib ("Stimulus.RT")
+nl      = c.GetAttrib ("nLoop")
+
+'Find coordinates of mouse click
+Mouse.GetCursorPos ptMouse.x, ptMouse.y
+
+'Determine string name of SlideImage or SlideText object at 
+'mouse click coordinates. Assign that value to strHit
+strHit = theState.HitTest(ptMouse.x, ptMouse.y)
+
+'Compare string name where mouse click occurred to CorrectAnswer
+'attribute on each trial, and score response
+
+if     strHit="Image1" then
+			rep = "A"
+elseif strHit="Image2" then
+			rep = "B"
+elseif strHit="Image3" then
+			rep = "C"
+elseif strHit="Image4" then
+			rep = "D"
+elseif strHit="Image5" then
+			rep = "E"
+elseif strHit="Image6" then
+			rep = "F"
+else
+	goto Debut
+end if
+
+If nl=1 then
+	c.setattrib "R1" , rep
+	c.setattrib "RT1" , RT
+	c.setattrib "RTT" , RT
+	If rep = c.GetAttrib ("C1") Then
+	     c.setattrib "AC" , 1
+	Else
+	     c.setattrib "AC" , 0
+	End If
+else
+	if compteur=1 then
+		r1=rep
+		If (rep = c.GetAttrib ("C1") or rep = c.GetAttrib ("C2") or rep = c.GetAttrib ("C3") ) Then
+			c.setattrib "AC", c.getattrib("AC")+1
+		end if
+			c.setattrib "R1" , rep
+			c.setattrib "RT1" , RT
+	elseif compteur=2 then
+		r2=rep
+		If (rep =  c.GetAttrib ("C1") or rep = c.GetAttrib ("C2") or rep = c.GetAttrib ("C3") ) and rep <> r1 Then
+			c.setattrib "AC", c.getattrib("AC")+1
+		end if
+			c.setattrib "R2" , rep
+			c.setattrib "RT2" , RT
+	elseif compteur=3 then
+		r3=rep
+		If (rep =  c.GetAttrib ("C1") or rep = c.GetAttrib ("C2") or rep = c.GetAttrib ("C3") ) and rep <> r1 and rep <> r2 Then
+			c.setattrib "AC", c.getattrib("AC")+1
+		end if
+			c.setattrib "R3" , rep
+			c.setattrib "RT3" , RT
+			c.setattrib "RTT" , val(c.getattrib("RT1"))+val(c.getattrib("RT2"))+val(c.getattrib("RT3"))
+	end if
+
+	compteur=compteur+1
+	RT=0
+	If compteur <= nl then goto Debut
+end if
+
+	'''''''''''''''''''''''''''''''''''''''''''''
+	' InLine - DoHitTest END
+	'''''''''''''''''''''''''''''''''''''''''''''
+	
+	
+	
+	Select Case Blank500.ActiveState
+		Case "Default"
+
+	End Select
+
+	Blank500.Run
+	
+	c.SetAttrib "Stimulus.OnsetDelay", Stimulus.OnsetDelay
+	c.SetAttrib "Stimulus.OnsetTime", Stimulus.OnsetTime
+	c.SetAttrib "Stimulus.DurationError", Stimulus.DurationError
+	c.SetAttrib "Stimulus.RTTime", Stimulus.RTTime
+	c.SetAttrib "Stimulus.ACC", Stimulus.ACC
+	c.SetAttrib "Stimulus.RT", Stimulus.RT
+	c.SetAttrib "Stimulus.RESP", Stimulus.RESP
+	c.SetAttrib "Stimulus.CRESP", Stimulus.CRESP
+	
+
+	c.Log
+End Sub
+
+
+
+
+
+
+
+'--------------------------------------------------------------------------
+' InitDevices
+'
+'--------------------------------------------------------------------------
+Sub InitDevices(c As Context)
+
+
+
+	SetOSThreadPriority 3
+
+
+	Set Keyboard = New KeyboardDevice
+	Keyboard.Name = "Keyboard"
+
+	Dim KeyboardKeyboardDeviceInfo as KeyboardDeviceInfo
+	KeyboardKeyboardDeviceInfo.CollectionMode = ebPressesOnly
+	KeyboardKeyboardDeviceInfo.CapsLock = ebCapsLockOff
+	KeyboardKeyboardDeviceInfo.NumLock = ebNumLockOff
+	Keyboard.Open KeyboardKeyboardDeviceInfo
+	
+	Set Mouse = New MouseDevice
+	Mouse.Name = "Mouse"
+
+	Dim MouseMouseDeviceInfo as MouseDeviceInfo
+	MouseMouseDeviceInfo.OpenMode = ebMouseOpenModeDirect
+	MouseMouseDeviceInfo.CollectionMode = ebPressesOnly
+	MouseMouseDeviceInfo.ShowCursor = True
+	Mouse.Open MouseMouseDeviceInfo
+
+	Set Display = New DisplayDevice
+	Display.Name = "Display"
+
+	Dim DisplayDisplayDeviceInfo As DisplayDeviceInfo
+	DisplayDisplayDeviceInfo.XRes = 1024
+	DisplayDisplayDeviceInfo.YRes = 768
+	DisplayDisplayDeviceInfo.ColorDepth = 16
+	DisplayDisplayDeviceInfo.RefreshRate = 0
+	DisplayDisplayDeviceInfo.NumPages = 0
+
+	Display.Open DisplayDisplayDeviceInfo
+	c.SetAttrib "Display.RefreshRate", Format$(Display.CalculatedRefreshRate, "0.000")
+
+	Set Sound = New SoundDevice
+	Sound.Name = "Sound"
+
+	Dim SoundSoundOutDeviceInfo As SoundDeviceInfo
+	SoundSoundOutDeviceInfo.Channels = 1
+	SoundSoundOutDeviceInfo.SamplesPerSecond = 22050
+	SoundSoundOutDeviceInfo.BitsPerSample = 16
+	Sound.Open SoundSoundOutDeviceInfo
+
+
+	SetOSThreadPriority 0
+
+End Sub
+
+
+
+'--------------------------------------------------------------------------
+' InitObjects
+'
+'--------------------------------------------------------------------------
+Sub InitObjects(c As Context)
+
+	Set SessionProc = New Procedure
+	SessionProc.Name = "SessionProc"
+	SessionProc.Tag = ""
+	SessionProc.Subroutine = "SessionProc_Run"
+
+	Set Bloc1 = New List
+	Bloc1.Name = "Bloc1"
+	Bloc1.Tag = ""
+
+	'Initialization for Bloc1
+	
+	Set Bloc1.Order = New SequentialOrder
+	Set Bloc1.Deletion = NoDeletion
+	Bloc1.ResetEveryRun = False
+
+	' Create the column headings
+	Bloc1.AddAttrib "Cible"
+	Bloc1.AddAttrib "A"
+	Bloc1.AddAttrib "B"
+	Bloc1.AddAttrib "C"
+	Bloc1.AddAttrib "D"
+	Bloc1.AddAttrib "E"
+	Bloc1.AddAttrib "F"
+	Bloc1.AddAttrib "nLoop"
+	Bloc1.AddAttrib "C1"
+	Bloc1.AddAttrib "C2"
+	Bloc1.AddAttrib "C3"
+	Bloc1.AddAttrib "R1"
+	Bloc1.AddAttrib "R2"
+	Bloc1.AddAttrib "R3"
+	Bloc1.AddAttrib "AC"
+
+
+	' Add the Levels and fill their values
+	Bloc1.AddLevel "1"
+	Bloc1.SetWeight "1", "1"
+	Bloc1.SetProc "1", "TrialProc"
+	'Nested not specified for this level
+	Bloc1.SetAttrib "1", "Cible", "s01"
+	Bloc1.SetAttrib "1", "A", "r01A"
+	Bloc1.SetAttrib "1", "B", "r01B"
+	Bloc1.SetAttrib "1", "C", "r01C"
+	Bloc1.SetAttrib "1", "D", "r01D"
+	Bloc1.SetAttrib "1", "E", "r01E"
+	Bloc1.SetAttrib "1", "F", "r01F"
+	Bloc1.SetAttrib "1", "nLoop", "1"
+	Bloc1.SetAttrib "1", "C1", "E"
+	Bloc1.SetAttrib "1", "C2", "X"
+	Bloc1.SetAttrib "1", "C3", "X"
+	Bloc1.SetAttrib "1", "R1", "?"
+	Bloc1.SetAttrib "1", "R2", "?"
+	Bloc1.SetAttrib "1", "R3", "?"
+	Bloc1.SetAttrib "1", "AC", "?"
+	Bloc1.AddLevel "2"
+	Bloc1.SetWeight "2", "1"
+	Bloc1.SetProc "2", "TrialProc"
+	'Nested not specified for this level
+	Bloc1.SetAttrib "2", "Cible", "s02"
+	Bloc1.SetAttrib "2", "A", "r02A"
+	Bloc1.SetAttrib "2", "B", "r02B"
+	Bloc1.SetAttrib "2", "C", "r02C"
+	Bloc1.SetAttrib "2", "D", "r02D"
+	Bloc1.SetAttrib "2", "E", "r02E"
+	Bloc1.SetAttrib "2", "F", "r02F"
+	Bloc1.SetAttrib "2", "nLoop", "1"
+	Bloc1.SetAttrib "2", "C1", "A"
+	Bloc1.SetAttrib "2", "C2", "X"
+	Bloc1.SetAttrib "2", "C3", "X"
+	Bloc1.SetAttrib "2", "R1", "?"
+	Bloc1.SetAttrib "2", "R2", "?"
+	Bloc1.SetAttrib "2", "R3", "?"
+	Bloc1.SetAttrib "2", "AC", "?"
+	Bloc1.AddLevel "3"
+	Bloc1.SetWeight "3", "1"
+	Bloc1.SetProc "3", "TrialProc"
+	'Nested not specified for this level
+	Bloc1.SetAttrib "3", "Cible", "s03"
+	Bloc1.SetAttrib "3", "A", "r03A"
+	Bloc1.SetAttrib "3", "B", "r03B"
+	Bloc1.SetAttrib "3", "C", "r03C"
+	Bloc1.SetAttrib "3", "D", "r03D"
+	Bloc1.SetAttrib "3", "E", "r03E"
+	Bloc1.SetAttrib "3", "F", "r03F"
+	Bloc1.SetAttrib "3", "nLoop", "1"
+	Bloc1.SetAttrib "3", "C1", "B"
+	Bloc1.SetAttrib "3", "C2", "X"
+	Bloc1.SetAttrib "3", "C3", "X"
+	Bloc1.SetAttrib "3", "R1", "?"
+	Bloc1.SetAttrib "3", "R2", "?"
+	Bloc1.SetAttrib "3", "R3", "?"
+	Bloc1.SetAttrib "3", "AC", "?"
+	Bloc1.AddLevel "4"
+	Bloc1.SetWeight "4", "1"
+	Bloc1.SetProc "4", "TrialProc"
+	'Nested not specified for this level
+	Bloc1.SetAttrib "4", "Cible", "s04"
+	Bloc1.SetAttrib "4", "A", "r04A"
+	Bloc1.SetAttrib "4", "B", "r04B"
+	Bloc1.SetAttrib "4", "C", "r04C"
+	Bloc1.SetAttrib "4", "D", "r04D"
+	Bloc1.SetAttrib "4", "E", "r04E"
+	Bloc1.SetAttrib "4", "F", "r04F"
+	Bloc1.SetAttrib "4", "nLoop", "1"
+	Bloc1.SetAttrib "4", "C1", "C"
+	Bloc1.SetAttrib "4", "C2", "X"
+	Bloc1.SetAttrib "4", "C3", "X"
+	Bloc1.SetAttrib "4", "R1", "?"
+	Bloc1.SetAttrib "4", "R2", "?"
+	Bloc1.SetAttrib "4", "R3", "?"
+	Bloc1.SetAttrib "4", "AC", "?"
+	Bloc1.AddLevel "5"
+	Bloc1.SetWeight "5", "1"
+	Bloc1.SetProc "5", "TrialProc"
+	'Nested not specified for this level
+	Bloc1.SetAttrib "5", "Cible", "s05"
+	Bloc1.SetAttrib "5", "A", "r05A"
+	Bloc1.SetAttrib "5", "B", "r05B"
+	Bloc1.SetAttrib "5", "C", "r05C"
+	Bloc1.SetAttrib "5", "D", "r05D"
+	Bloc1.SetAttrib "5", "E", "r05E"
+	Bloc1.SetAttrib "5", "F", "r05F"
+	Bloc1.SetAttrib "5", "nLoop", "1"
+	Bloc1.SetAttrib "5", "C1", "F"
+	Bloc1.SetAttrib "5", "C2", "X"
+	Bloc1.SetAttrib "5", "C3", "x"
+	Bloc1.SetAttrib "5", "R1", "?"
+	Bloc1.SetAttrib "5", "R2", "?"
+	Bloc1.SetAttrib "5", "R3", "?"
+	Bloc1.SetAttrib "5", "AC", "?"
+	Bloc1.AddLevel "6"
+	Bloc1.SetWeight "6", "1"
+	Bloc1.SetProc "6", "TrialProc"
+	'Nested not specified for this level
+	Bloc1.SetAttrib "6", "Cible", "s06"
+	Bloc1.SetAttrib "6", "A", "r06A"
+	Bloc1.SetAttrib "6", "B", "r06B"
+	Bloc1.SetAttrib "6", "C", "r06C"
+	Bloc1.SetAttrib "6", "D", "r06D"
+	Bloc1.SetAttrib "6", "E", "r06E"
+	Bloc1.SetAttrib "6", "F", "r06F"
+	Bloc1.SetAttrib "6", "nLoop", "1"
+	Bloc1.SetAttrib "6", "C1", "B"
+	Bloc1.SetAttrib "6", "C2", "X"
+	Bloc1.SetAttrib "6", "C3", "X"
+	Bloc1.SetAttrib "6", "R1", "?"
+	Bloc1.SetAttrib "6", "R2", "?"
+	Bloc1.SetAttrib "6", "R3", "?"
+	Bloc1.SetAttrib "6", "AC", "?"
+	Bloc1.Filename = ""
+	Bloc1.LoadMethod = ebLoadMethodScript
+
+	Set Bloc1.TerminateCondition = Cycles(1)
+	Set Bloc1.ResetCondition = Samples(6)
+	Bloc1.Reset
+	
+	Set TrialProc = New Procedure
+	TrialProc.Name = "TrialProc"
+	TrialProc.Tag = ""
+	TrialProc.Subroutine = "TrialProc_Run"
+
+	Set Stimulus = New Slide
+	Stimulus.Name = "Stimulus"
+	Stimulus.Tag = ""
+
+	Set StimulusEchoClients = New EchoClientCollection
+	Stimulus.Duration = CLng("-1")
+	Stimulus.TimingMode = ebTimingModeEvent
+	Stimulus.PreRelease = Val("0")
+
+	Stimulus.OnsetSync = 1
+	Stimulus.OffsetSync = 0
+
+	Set Stimulus_State = New SlideState
+	Stimulus_State.Name = "Default"
+
+	InitSlideStateDefaults Stimulus_State
+
+	Stimulus_State.BackColor = CColor("42, 42, 42")
+
+	Stimulus.States.Add Stimulus_State, "Default"
+
+
+	Set Stimulus_SlideImage = New SlideImage
+	Stimulus_SlideImage.Name = "Image1"
+
+	InitSlideImageDefaults Stimulus_SlideImage
+
+	Stimulus_SlideImage.X = "20%"
+	Stimulus_SlideImage.Y = "55%"
+	Stimulus_SlideImage.Width = "129"
+	Stimulus_SlideImage.Height = "150"
+	Stimulus.States.Item("Default").Objects.Add Stimulus_SlideImage, "Image1"
+
+	Set Stimulus_SlideImage = New SlideImage
+	Stimulus_SlideImage.Name = "Image6"
+
+	InitSlideImageDefaults Stimulus_SlideImage
+
+	Stimulus_SlideImage.X = "80%"
+	Stimulus_SlideImage.Y = "85%"
+	Stimulus_SlideImage.Width = "129"
+	Stimulus_SlideImage.Height = "150"
+	Stimulus.States.Item("Default").Objects.Add Stimulus_SlideImage, "Image6"
+
+	Set Stimulus_SlideImage = New SlideImage
+	Stimulus_SlideImage.Name = "Image4"
+
+	InitSlideImageDefaults Stimulus_SlideImage
+
+	Stimulus_SlideImage.X = "20%"
+	Stimulus_SlideImage.Y = "85%"
+	Stimulus_SlideImage.Width = "129"
+	Stimulus_SlideImage.Height = "150"
+	Stimulus.States.Item("Default").Objects.Add Stimulus_SlideImage, "Image4"
+
+	Set Stimulus_SlideImage = New SlideImage
+	Stimulus_SlideImage.Name = "Image5"
+
+	InitSlideImageDefaults Stimulus_SlideImage
+
+	Stimulus_SlideImage.X = "50%"
+	Stimulus_SlideImage.Y = "85%"
+	Stimulus_SlideImage.Width = "129"
+	Stimulus_SlideImage.Height = "150"
+	Stimulus.States.Item("Default").Objects.Add Stimulus_SlideImage, "Image5"
+
+	Set Stimulus_SlideImage = New SlideImage
+	Stimulus_SlideImage.Name = "Image3"
+
+	InitSlideImageDefaults Stimulus_SlideImage
+
+	Stimulus_SlideImage.X = "80%"
+	Stimulus_SlideImage.Y = "55%"
+	Stimulus_SlideImage.Width = "129"
+	Stimulus_SlideImage.Height = "150"
+	Stimulus.States.Item("Default").Objects.Add Stimulus_SlideImage, "Image3"
+
+	Set Stimulus_SlideImage = New SlideImage
+	Stimulus_SlideImage.Name = "Image2"
+
+	InitSlideImageDefaults Stimulus_SlideImage
+
+	Stimulus_SlideImage.X = "50%"
+	Stimulus_SlideImage.Y = "55%"
+	Stimulus_SlideImage.Width = "129"
+	Stimulus_SlideImage.Height = "150"
+	Stimulus.States.Item("Default").Objects.Add Stimulus_SlideImage, "Image2"
+
+	Set Stimulus_SlideImage = New SlideImage
+	Stimulus_SlideImage.Name = "Image0"
+
+	InitSlideImageDefaults Stimulus_SlideImage
+
+	Stimulus_SlideImage.X = "50%"
+	Stimulus_SlideImage.Y = "20%"
+	Stimulus_SlideImage.Width = "133"
+	Stimulus_SlideImage.Height = "200"
+	Stimulus.States.Item("Default").Objects.Add Stimulus_SlideImage, "Image0"
+	Stimulus.ActiveState = "Default"
+
+	Set Bloc3 = New List
+	Bloc3.Name = "Bloc3"
+	Bloc3.Tag = ""
+
+	'Initialization for Bloc3
+	
+	Set Bloc3.Order = New SequentialOrder
+	Set Bloc3.Deletion = NoDeletion
+	Bloc3.ResetEveryRun = False
+
+	' Create the column headings
+	Bloc3.AddAttrib "Cible"
+	Bloc3.AddAttrib "A"
+	Bloc3.AddAttrib "B"
+	Bloc3.AddAttrib "C"
+	Bloc3.AddAttrib "D"
+	Bloc3.AddAttrib "E"
+	Bloc3.AddAttrib "F"
+	Bloc3.AddAttrib "nLoop"
+	Bloc3.AddAttrib "C1"
+	Bloc3.AddAttrib "C2"
+	Bloc3.AddAttrib "C3"
+	Bloc3.AddAttrib "R1"
+	Bloc3.AddAttrib "R2"
+	Bloc3.AddAttrib "R3"
+	Bloc3.AddAttrib "AC"
+	Bloc3.Filename = ""
+	Bloc3.LoadMethod = ebLoadMethodEmbedded
+
+	Bloc3.Load
+
+	Set Bloc3.TerminateCondition = Cycles(1)
+	Set Bloc3.ResetCondition = Samples(9)
+	Bloc3.Reset
+	
+	Set Blank500 = New Slide
+	Blank500.Name = "Blank500"
+	Blank500.Tag = ""
+	Blank500.Duration = CLng("500")
+	Blank500.TimingMode = ebTimingModeEvent
+	Blank500.PreRelease = Val("0")
+
+	Blank500.OnsetSync = 1
+	Blank500.OffsetSync = 0
+
+	Set Blank500_State = New SlideState
+	Blank500_State.Name = "Default"
+
+	InitSlideStateDefaults Blank500_State
+
+	Blank500_State.BackColor = CColor("42, 42, 42")
+
+	Blank500.States.Add Blank500_State, "Default"
+
+	Blank500.ActiveState = "Default"
+
+	Set Bloc2 = New List
+	Bloc2.Name = "Bloc2"
+	Bloc2.Tag = ""
+
+	'Initialization for Bloc2
+	
+	Set Bloc2.Order = New SequentialOrder
+	Set Bloc2.Deletion = NoDeletion
+	Bloc2.ResetEveryRun = False
+
+	' Create the column headings
+	Bloc2.AddAttrib "Cible"
+	Bloc2.AddAttrib "A"
+	Bloc2.AddAttrib "B"
+	Bloc2.AddAttrib "C"
+	Bloc2.AddAttrib "D"
+	Bloc2.AddAttrib "E"
+	Bloc2.AddAttrib "F"
+	Bloc2.AddAttrib "nLoop"
+	Bloc2.AddAttrib "C1"
+	Bloc2.AddAttrib "C2"
+	Bloc2.AddAttrib "C3"
+	Bloc2.AddAttrib "R1"
+	Bloc2.AddAttrib "R2"
+	Bloc2.AddAttrib "R3"
+	Bloc2.AddAttrib "AC"
+	Bloc2.Filename = ""
+	Bloc2.LoadMethod = ebLoadMethodEmbedded
+
+	Bloc2.Load
+
+	Set Bloc2.TerminateCondition = Cycles(1)
+	Set Bloc2.ResetCondition = Samples(7)
+	Bloc2.Reset
+	
+	Set Consignes1 = New ImageDisplay
+	Consignes1.Name = "Consignes1"
+	Consignes1.Tag = ""
+
+	Set Consignes1EchoClients = New EchoClientCollection
+	Consignes1.Filename = "Consignes1.bmp"
+	Consignes1.Load
+
+	InitImageDisplayDefaults Consignes1
+
+	Consignes1.BackColor = CColor("white")
+	Consignes1.Width = "1024"
+	Consignes1.Height = "768"
+	Consignes1.Duration = CLng("-1")
+	Consignes1.TimingMode = ebTimingModeEvent
+	Consignes1.PreRelease = Val("0")
+
+	Consignes1.OnsetSync = 1
+	Consignes1.OffsetSync = 0
+
+	Set Consignes2 = New ImageDisplay
+	Consignes2.Name = "Consignes2"
+	Consignes2.Tag = ""
+
+	Set Consignes2EchoClients = New EchoClientCollection
+	Consignes2.Filename = "Consignes2.bmp"
+	Consignes2.Load
+
+	InitImageDisplayDefaults Consignes2
+
+	Consignes2.BackColor = CColor("white")
+	Consignes2.Width = "1024"
+	Consignes2.Height = "768"
+	Consignes2.Duration = CLng("-1")
+	Consignes2.TimingMode = ebTimingModeEvent
+	Consignes2.PreRelease = Val("0")
+
+	Consignes2.OnsetSync = 1
+	Consignes2.OffsetSync = 0
+
+	Set Consignes3 = New ImageDisplay
+	Consignes3.Name = "Consignes3"
+	Consignes3.Tag = ""
+
+	Set Consignes3EchoClients = New EchoClientCollection
+	Consignes3.Filename = "Consignes3.bmp"
+	Consignes3.Load
+
+	InitImageDisplayDefaults Consignes3
+
+	Consignes3.BackColor = CColor("white")
+	Consignes3.Width = "1024"
+	Consignes3.Height = "768"
+	Consignes3.Duration = CLng("-1")
+	Consignes3.TimingMode = ebTimingModeEvent
+	Consignes3.PreRelease = Val("0")
+
+	Consignes3.OnsetSync = 1
+	Consignes3.OffsetSync = 0
+
+	Set Consignes4 = New ImageDisplay
+	Consignes4.Name = "Consignes4"
+	Consignes4.Tag = ""
+
+	Set Consignes4EchoClients = New EchoClientCollection
+	Consignes4.Filename = "Consignes4.bmp"
+	Consignes4.Load
+
+	InitImageDisplayDefaults Consignes4
+
+	Consignes4.BackColor = CColor("white")
+	Consignes4.Width = "1024"
+	Consignes4.Height = "768"
+	Consignes4.Duration = CLng("-1")
+	Consignes4.TimingMode = ebTimingModeEvent
+	Consignes4.PreRelease = Val("0")
+
+	Consignes4.OnsetSync = 1
+	Consignes4.OffsetSync = 0
+
+	Set Consignes5 = New ImageDisplay
+	Consignes5.Name = "Consignes5"
+	Consignes5.Tag = ""
+
+	Set Consignes5EchoClients = New EchoClientCollection
+	Consignes5.Filename = "Consignes5.bmp"
+	Consignes5.Load
+
+	InitImageDisplayDefaults Consignes5
+
+	Consignes5.BackColor = CColor("white")
+	Consignes5.Width = "1024"
+	Consignes5.Height = "768"
+	Consignes5.Duration = CLng("-1")
+	Consignes5.TimingMode = ebTimingModeEvent
+	Consignes5.PreRelease = Val("0")
+
+	Consignes5.OnsetSync = 1
+	Consignes5.OffsetSync = 0
+
+	Set Consignes6 = New ImageDisplay
+	Consignes6.Name = "Consignes6"
+	Consignes6.Tag = ""
+
+	Set Consignes6EchoClients = New EchoClientCollection
+	Consignes6.Filename = "Consignes6.bmp"
+	Consignes6.Load
+
+	InitImageDisplayDefaults Consignes6
+
+	Consignes6.BackColor = CColor("white")
+	Consignes6.Width = "1024"
+	Consignes6.Height = "768"
+	Consignes6.Duration = CLng("-1")
+	Consignes6.TimingMode = ebTimingModeEvent
+	Consignes6.PreRelease = Val("0")
+
+	Consignes6.OnsetSync = 1
+	Consignes6.OffsetSync = 0
+
+	Set Consignes7 = New ImageDisplay
+	Consignes7.Name = "Consignes7"
+	Consignes7.Tag = ""
+
+	Set Consignes7EchoClients = New EchoClientCollection
+	Consignes7.Filename = "Consignes7.bmp"
+	Consignes7.Load
+
+	InitImageDisplayDefaults Consignes7
+
+	Consignes7.BackColor = CColor("white")
+	Consignes7.Width = "1024"
+	Consignes7.Height = "768"
+	Consignes7.Duration = CLng("-1")
+	Consignes7.TimingMode = ebTimingModeEvent
+	Consignes7.PreRelease = Val("0")
+
+	Consignes7.OnsetSync = 1
+	Consignes7.OffsetSync = 0
+
+
+End Sub
+
+
+'--------------------------------------------------------------------------
+' InitPackages
+'
+'--------------------------------------------------------------------------
+Sub InitPackages(c As Context)
+
+End Sub
+
+
+
+'--------------------------------------------------------------------------
+'--------------------------------------------------------------------------
+' UnInitDevices
+'--------------------------------------------------------------------------
+Sub UnInitDevices()
+
+	Keyboard.Close
+	Set Keyboard = Nothing
+
+	Mouse.Close
+	Set Mouse = Nothing
+
+	Display.Close
+	Set Display = Nothing
+	Sound.Close
+End Sub
+
+
+'--------------------------------------------------------------------------
+'--------------------------------------------------------------------------
+' UnInitPackages
+'--------------------------------------------------------------------------
+Sub UnInitPackages()
+End Sub
+
+
+'--------------------------------------------------------------------------
+' UnInitObjects
+'
+'--------------------------------------------------------------------------
+Sub UnInitObjects()
+
+	Set SessionProc = Nothing
+
+	Set Bloc1 = Nothing
+
+	Set TrialProc = Nothing
+
+	Set Stimulus = Nothing
+
+	Set StimulusEchoClients = Nothing
+
+	Set Bloc3 = Nothing
+
+	Set Blank500 = Nothing
+
+	Set Bloc2 = Nothing
+
+	Set Consignes1 = Nothing
+
+	Set Consignes1EchoClients = Nothing
+
+	Set Consignes2 = Nothing
+
+	Set Consignes2EchoClients = Nothing
+
+	Set Consignes3 = Nothing
+
+	Set Consignes3EchoClients = Nothing
+
+	Set Consignes4 = Nothing
+
+	Set Consignes4EchoClients = Nothing
+
+	Set Consignes5 = Nothing
+
+	Set Consignes5EchoClients = Nothing
+
+	Set Consignes6 = Nothing
+
+	Set Consignes6EchoClients = Nothing
+
+	Set Consignes7 = Nothing
+
+	Set Consignes7EchoClients = Nothing
+
+
+End Sub
+
+
+'--------------------------------------------------------------------------
+' Main
+'
+'--------------------------------------------------------------------------
+Sub Main()
+
+	CreateDefaultPort
+
+	' Create and initialize the default context, data file,
+	' and provide global access to the context.
+	Dim c As Context
+	Set c = New Context
+	Set c.DataFile = New DataFile
+	c.PushNewFrame
+	Set ebContext = c
+
+	' Set the log level names
+	c.SetLogLevelName 1, "Session"
+	c.SetLogLevelName 2, "Block"
+	c.SetLogLevelName 3, "Trial"
+	c.SetLogLevelName 4, "SubTrial"
+	c.SetLogLevelName 5, "LogLevel5"
+	c.SetLogLevelName 6, "LogLevel6"
+	c.SetLogLevelName 7, "LogLevel7"
+	c.SetLogLevelName 8, "LogLevel8"
+	c.SetLogLevelName 9, "LogLevel9"
+	c.SetLogLevelName 10, "LogLevel10"
+
+	' Set standard logging items
+	ebContext.SetAttrib "Experiment", "Script_Benton"
+	ebContext.SetAttrib "SessionDate", Date$
+	ebContext.SetAttrib "SessionTime", Time$
+	ebContext.SetAttrib "RandomSeed", PRNG.GetSeed()
+
+	If Basic.OS = ebWin32 Then
+		WinActivate "E-Run Experiment Window"
+	End If
+
+	' Get the StartupInfo
+	' Set default for GroupNumber
+	c.SetAttrib "Group", "1"
+
+
+	' Set the defaults for all of the StartupInfo
+	c.SetAttrib "Subject", "1"
+	c.SetAttrib "Session", "1"
+
+	Dim vAnswer As Variant
+StartupInfo_Begin:
+
+StartupInfoPrompt_Subject:
+	vAnswer = AskBox("Please enter the Subject Number (0-32767):", c.GetAttrib("Subject"))
+	If Not IsEmpty(vAnswer) then
+		If Not IsNumeric(vAnswer) then
+			MsgBox "Please enter an integer value"
+			GoTo StartupInfoPrompt_Subject
+		ElseIf CLng(vAnswer) < 0 Then
+			MsgBox "The value for Subject must not be less than 0"
+			GoTo StartupInfoPrompt_Subject
+		ElseIf CLng(vAnswer) > 32767 Then
+			MsgBox "The value for Subject must be not be greater than 32767"
+			GoTo StartupInfoPrompt_Subject
+		End If
+	Else
+		GoTo ExperimentAbort
+	End if
+
+	c.SetAttrib "Subject", CStr(vAnswer)
+
+StartupInfoPrompt_Session:
+	vAnswer = AskBox("Please enter the Session Number (0-32767):", c.GetAttrib("Session"))
+	If Not IsEmpty(vAnswer) then
+		If Not IsNumeric(vAnswer) then
+			MsgBox "Please enter an integer value"
+			GoTo StartupInfoPrompt_Session
+		ElseIf CLng(vAnswer) < 0 Then
+			MsgBox "The value for Session must not be less than 0"
+			GoTo StartupInfoPrompt_Session
+		ElseIf CLng(vAnswer) > 32767 Then
+			MsgBox "The value for Session must be not be greater than 32767"
+			GoTo StartupInfoPrompt_Session
+		End If
+	Else
+		GoTo ExperimentAbort
+	End if
+
+	c.SetAttrib "Session", CStr(vAnswer)
+
+	' Display the summary
+	Dim strSummary As String
+	strSummary = "Subject:    " & c.GetAttrib("Subject") & "\n"
+	strSummary = strSummary & "Session:    " & c.GetAttrib("Session") & "\n"
+	strSummary = strSummary & "\nContinue with the above startup info?"
+
+	Dim nSummaryAnswer As Integer
+	nSummaryAnswer = MsgBox(strSummary, ebYesNoCancel + ebQuestion, "Summary of Startup Info")
+	If nSummaryAnswer = ebNo Then
+		GoTo StartupInfo_Begin
+	ElseIf nSummaryAnswer = ebCancel Then
+		GoTo ExperimentAbort
+	End If
+
+
+	' Set the default Data Filename
+	c.DataFile.Filename = CStr(c.GetAttrib("Experiment")) & "-" & CStr(c.GetAttrib("Subject")) & "-" & CStr(c.GetAttrib("Session")) & ".txt"
+
+	' If we are logging data, then prompt to overwrite the data file if it exists
+	If CLng(c.GetAttrib("Subject")) <> 0 Then
+		If FileExists(c.DataFile.Filename) Then
+			If ebYes <> MsgBox("WARNING: The data file and/or recovery file already exists:\nFILE: " & c.DataFile.Filename & "\n\nDo you want to overwrite?", ebYesNo + ebQuestion) Then
+				GoTo ExperimentAbort
+			End If
+		End If
+	End If
+
+	' Initialize all system devices, packages, and objects
+	InitDevices c
+	InitPackages c
+	InitObjects c
+
+	' If we are logging data, then open the datafile
+	If CLng(c.GetAttrib("Subject")) <> 0 Then
+		c.DataFile.Open
+		c.LogHeader
+	End If
+
+	' Start the running of the Experiment
+	SessionProc.Run c
+
+	' Clean up the context and close the datafile
+	If CLng(c.GetAttrib("Subject")) <> 0 Then
+		c.DataFile.Close
+		' Attempt to convert the recovery file into a data file
+		Dim nConvert As Long
+		nConvert = c.DataFile.Convert(ebProgressSimple)
+		If nConvert = 0 Then
+			' Settings in E-Studio are set to not remove E-Recovery file
+		Else
+			' The datafile failed to convert!
+			MsgBox "ERROR: The datafile did not convert!\nFILE: " & c.DataFile.Filename & "\n\nIt is recommended that you recover your data with the E-Recovery utility"
+			MsgBox c.DataFile.GetLastErrorMessage()
+		End If
+	End If
+ExperimentFinish:
+
+	UnInitObjects
+
+	UnInitPackages
+	UnInitDevices
+
+ExperimentAbort:
+
+	' Clean up the context
+	c.PopFrame
+	Set c = Nothing
+	Set ebContext = Nothing
+
+	DestroyDefaultPort
+
+End Sub
+
+
+[DataSection_Bloc3(1)]
+Weight	Nested	Procedure	Cible	A	B	C	D	E	F	nLoop	C1	C2	C3	R1	R2	R3	AC
+1		TrialProc	s14	r14A	r14B	r14C	r14D	r14E	r14F	3	A	C	E	?	?	?	?
+1		TrialProc	s15	r15A	r15B	r15C	r15D	r15E	r15F	3	B	C	D	?	?	?	?
+1		TrialProc	s16	r16A	r16B	r16C	r16D	r16E	r16F	3	B	D	E	?	?	?	?
+1		TrialProc	s17	r17A	r17B	r17C	r17D	r17E	r17F	3	A	D	F	?	?	?	?
+1		TrialProc	s18	r18A	r18B	r18C	r18D	r18E	r18F	3	C	D	F	?	?	?	?
+1		TrialProc	s19	r19A	r19B	r19C	r19D	r19E	r19F	3	B	C	D	?	?	?	?
+1		TrialProc	s20	r20A	r20B	r20C	r20D	r20E	r20F	3	A	B	C	?	?	?	?
+1		TrialProc	s21	r21A	r21B	r21C	r21D	r21E	r21F	3	A	E	F	?	?	?	?
+1		TrialProc	s22	r22A	r22B	r22C	r22D	r22E	r22F	3	B	D	E	?	?	?	?\0
+
+[DataSection_Bloc2(1)]
+Weight	Nested	Procedure	Cible	A	B	C	D	E	F	nLoop	C1	C2	C3	R1	R2	R3	AC
+1		TrialProc	s07	r07A	r07B	r07C	r07D	r07E	r07F	3	B	E	F	?	?	?	?
+1		TrialProc	s08	r08A	r08B	r08C	r08D	r08E	r08F	3	A	C	D	?	?	?	?
+1		TrialProc	s09	r09A	r09B	r09C	r09D	r09E	r09F	3	B	D	F	?	?	?	?
+1		TrialProc	s10	r10A	r10B	r10C	r10D	r10E	r10F	3	B	E	F	?	?	?	?
+1		TrialProc	s11	r11A	r11B	r11C	r11D	r11E	r11F	3	A	D	F	?	?	?	?
+1		TrialProc	s12	r12A	r12B	r12C	r12D	r12E	r12F	3	B	C	F	?	?	?	?
+1		TrialProc	s13	r13A	r13B	r13C	r13D	r13E	r13F	3	A	C	E	?	?	?	?\0

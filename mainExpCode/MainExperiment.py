@@ -33,11 +33,11 @@ import _pickle as pickle
 from psychopy import visual, event, core, gui, data
 import numpy as np
 import glob
-from PIL import Image
+from PIL import Image, ImageOps
 import random
 import copy
 from functions_7TCtF import *
-
+from lowerSNRtest import *
 
 
 
@@ -66,7 +66,7 @@ fixStEn = 12 # Duration of fixation at begin/end of run in ms
 checkerDur = 10 # seconds
 checkerHz = 4
 
-colourChange = (0.8, 1.0, 1.0) #(0, 1.0, 1.0) = too red
+colourChange = (0.5, 1.0, 1.0) #(0, 1.0, 1.0) = too red #(0.8, 1.0, 1.0) = not red enough
 
 maskDur = 166.66667 # ms
 trialDur = 416.666667 # ms
@@ -125,10 +125,11 @@ logname = data_path_sub + exp_info['1. Subject (e.g. sub-00)']
 
 
 if exp_info['4. Make sequence'] == 'yes':
-    #####################################################
     # run lower SNR code
     # it should return 
     # typCond = ['60', '35', '0'] 
+    typCond = lowerSNRtest(base_path,exp_info,data_path_sub)
+    print(f'condition types are: {typCond}')
     
 # save file with subject info ############################## made some changes here. Check
 info_name = f'{logname}_subject-info.csv'
@@ -172,7 +173,17 @@ checkerboards = []
 checkerboards.append(glob.glob(os.path.join(base_path, 'checkerBack*.bmp')))
 checkerboards.append(glob.glob(os.path.join(base_path, 'checkerFace*.bmp')))
 
+#load a mask of the face
+image = Image.open(f'{mask_path}alphamask.bmp')
+facemask = ImageOps.invert(image)
+facemask = np.asarray(facemask)
 
+# Convert from integers to floats
+facemask = facemask.astype('float32')
+
+# Normalize to the range 0-1
+facemask /= 255.0
+facemask = 2.*(facemask - np.min(facemask)) / np.ptp(facemask)-1
 #%% =============================================================================
 # open log file
 dataName = f'{logname}_{exp_info["2. Session"]}_run-{exp_info["3. Run number"]}_{exp_info["date"]}.csv'
@@ -250,6 +261,9 @@ catchStart = '' #so the code does not crash for keyCheck (only first call)
 caught = 1
 rt = None
 totalCatch = 0
+after = {'face' : '',
+        'mask' : '',
+        'back' : ''}
 
 for blocknr, block in enumerate(trialsReady):
     #start fixation
@@ -261,11 +275,13 @@ for blocknr, block in enumerate(trialsReady):
     rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
     
     #preload all stimuli for upcoming block
-    toDraw = loadblocktrials(win,trialsReady[block],stimSize)
+    toDraw, numFrames = loadblocktrials(win,trialsReady[block],stimSize,maskFr,trialFr, 'circle',0)
+    secondDraw, numFrames = loadblocktrials(win,trialsReady[block],stimSize,maskFr,trialFr, facemask,1)
     #if clock hits the fixation time for start/end in seconds, end the fixation
     loadEnd = clock.getTime()
     loadTime = loadEnd-fixStart
     fixdur = loadTime
+    print(f'Loading time: {loadTime}')
     
     if blocknr == 0: # first fixation has a different duration
         fixation_dur = fixStEn-1
@@ -292,7 +308,7 @@ for blocknr, block in enumerate(trialsReady):
     writer_log.writerow(fixation_inf)
 
     print(f'fixation, dur: {round((fixEnd-fixStart)*1000)} ms, load dur: {round(loadTime*1000)} ms') 
-    print(f'Block {blocknr} - vis{trial["visibility"]}_dur{trial["duration"]}')
+    print(f'Block {blocknr} - vis{trial["SNR"]}_dur{trial["duration"]}')
     if debugging == 1:
         shot = 0 # for screenshotting
     else:
@@ -304,7 +320,7 @@ for blocknr, block in enumerate(trialsReady):
         trial = trialsReady[block][trialnr]
         
         eventfile_info['onset'] = str(fixEnd)
-        trial_type = f'vis{trial["visibility"]}_dur{trial["duration"]}' 
+        trial_type = f'vis{trial["SNR"]}_dur{trial["duration"]}' 
         eventfile_info['trial_type'] = trial_type
         
         backFr = trialFr-(int(trial['nframes']) + maskFr)
@@ -313,54 +329,41 @@ for blocknr, block in enumerate(trialsReady):
         rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
         
         if trial['catchtrial'] == True: #if its a catchtrail, start the clock
+            
             totalCatch += 1
             catchStart = clock.getTime()
             if caught == 1:
                 corrResp += 1
             caught = 0
+        
         if shot == 0:
             win.getMovieFrame() ####### for screenshotting a trial
             win.saveMovieFrames(f'{save_path}{trial_type}_fix_{trialnr}.bmp')
         
-        for nFrames in range(int(trial['nframes'])): #stimulus
-            toDraw[trialnr]['face'].draw()
-            win.flip()
-            rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
-        afterStim = clock.getTime()
-        if shot == 0:
-            win.getMovieFrame() ####### for screenshotting a trial
-            win.saveMovieFrames(f'{save_path}{trial_type}_face_{trialnr}.bmp')
-        
-        for nFrames in range(maskFr): # mask
-            toDraw[trialnr]['mask'].draw()
-            win.flip()
-            rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
-        afterMask = clock.getTime()
-        if shot == 0:
-            win.getMovieFrame() ####### for screenshotting a trial
-            win.saveMovieFrames(f'{save_path}{trial_type}_mask_{trialnr}.bmp')
-        
-        for nFrames in range(backFr): # background
-            toDraw[trialnr]['background'].draw()
-            win.flip()
-            rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
-        endTrial = clock.getTime()
-        if shot == 0:
-            win.getMovieFrame() ####### for screenshotting a trial
-            win.saveMovieFrames(f'{save_path}{trial_type}_back{caught}.bmp')
-            if blocknr != 0:
-                shot = 1
+        ############################ flipping of stimuli -> actual trials
+        for imtype in toDraw[trialnr]:
+            for frame in range(numFrames[imtype]): #stimulus
+                toDraw[trialnr][imtype].draw()
+                secondDraw[trialnr][imtype].draw()
+                win.flip()
+                rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
+            after[imtype] = clock.getTime()
+            if shot == 0:
+                win.getMovieFrame() ####### for screenshotting a trial
+                win.saveMovieFrames(f'{save_path}{trial_type}_{imtype}_{trialnr}.bmp')
+                if imtype == 'back' and blocknr != 0:
+                    shot = 1
 
         trial['trialStart'] = startTrial
-        trial['trialDur'] = round((endTrial - startTrial) * 1000) 
-        trial['stimDur'] = round((afterStim - startTrial) * 1000)
-        trial['maskDur'] = round((afterMask - afterStim)*1000)
+        trial['trialDur'] = round((after['back'] - startTrial) * 1000) 
+        trial['stimDur'] = round((after['face'] - startTrial) * 1000)
+        trial['maskDur'] = round((after['mask'] - after['face'])*1000)
         trial['rt'] = rt
         rt = None
         writer_log.writerow(trial)
 
     # end trials
-    eventfile_info['duration'] = str(endTrial-fixEnd)
+    eventfile_info['duration'] = str(after['back']-fixEnd)
     writer_event.writerow(eventfile_info)
     
 
@@ -389,8 +392,8 @@ checkerRep = int((framerate / (2*frPerChecker)) * checkerDur)
 #final face chackerboard, then background checkerboard    
 for checks in checkerboards: #checks=1 is face checks=0 is background
     #per part, 10 seconds. 1 cicle (ori+inv) will show 4 times per sec. 
-    checkerOri = visual.ImageStim(win=win,size=[stimSize,stimSize], image=Image.open(checks[1]))
-    checkerInv = visual.ImageStim(win=win,size=[stimSize,stimSize], image=Image.open(checks[0]))
+    checkerOri = visual.ImageStim(win=win,size=[stimSize,stimSize], image=Image.open(checks[1]),mask='circle')
+    checkerInv = visual.ImageStim(win=win,size=[stimSize,stimSize], image=Image.open(checks[0]),mask='circle')
     checkerTimeStart= clock.getTime()
     for times in range(checkerRep):
         for nFrames in range(frPerChecker): #6 frames = 100ms each -> 5Hz(or10)

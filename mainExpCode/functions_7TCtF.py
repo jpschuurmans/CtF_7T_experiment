@@ -53,20 +53,27 @@ def load_txt_as_dict(path):
     instructiontexts = json.loads(instructions)
     return instructiontexts
 
-def loadblocktrials(win,trialsReady,stimSize):
+def loadblocktrials(win,trialsReady,stimSize,maskFr,trialFr,mask,catch):
     stimlist = {}
     #preload all stimuli for upcoming block
     for trialnr in trialsReady:
         trial = trialsReady[trialnr]
         stimuli = {'face' : 'stim',
                    'mask' : 'mask',
-                   'background' : 'back'}
+                   'back' : 'back'}
+        frames = {'face' : int(trial['nframes']),
+                   'mask' : maskFr,
+                   'back' : int(trialFr-(maskFr + int(trial['nframes'])))}
         for stim in stimuli:
             # load stimuli --> BG, face and mask
             image = Image.open(os.path.join(trial[f'{stimuli[stim]}_path'], trial[stim]))
-            stimuli[stim] = visual.ImageStim(win, size=[stimSize,stimSize],image=image,color=trial['colour'])
+            if catch:
+                colour = trial['colour']
+            else:
+                colour = (1.0, 1.0, 1.0)
+            stimuli[stim] = visual.ImageStim(win, size=[stimSize,stimSize],image=image,color=colour,mask=mask)
         stimlist[trialnr] = stimuli
-    return stimlist
+    return stimlist, frames
 
 def fixinfo(trial, name, fixStart, fixEnd, loadTime):
     eventfile_info = copy.deepcopy(trial)
@@ -179,7 +186,7 @@ class makeSequences(object):
                 # 2 at the first half, 2 at second half
                 # not the first or last trial of the block
                 jittertrials = random.sample(range(1,int(nPositions/2)), 2) + random.sample(range(int(nPositions/2),int(nPositions-1)), 2)
-                catchtrials = random.sample(range(1,int(nPositions/2)), 2) + random.sample(range(int(nPositions/2),int(nPositions-1)), 2)
+                catchtrials = random.sample(range(1,int(nPositions/2)), 1) + random.sample(range(int(nPositions/2),int(nPositions-1)), 1)
                 row = []
                 tmp = copy.deepcopy(allPosi)
                 for elem in jittertrials:
@@ -289,7 +296,7 @@ class makeSequences(object):
                                         'trial' : trialnr,
                                         'conditionName' : f'vis{block_info["type"]}_dur{block_info["dur"]}',
                                         'SF' : block_info['sf'],
-                                        'visibility' : block_info['type'],
+                                        'SNR' : block_info['type'],
                                         'duration' : block_info['dur'],
                                         'trialStart' : None,
                                         'trialDur' : None,
@@ -298,7 +305,7 @@ class makeSequences(object):
                                         'maskDur' : None,
                                         'face' : facestim,
                                         'mask' : mask,
-                                        'background' : f'BG{bg}.bmp',
+                                        'back' : f'BG{bg}.bmp',
                                         'jittertrial' : jittertrial,
                                         'catchtrial' : catch,
                                         'rt' : None,
