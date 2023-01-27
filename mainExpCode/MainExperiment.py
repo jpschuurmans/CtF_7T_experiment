@@ -116,6 +116,14 @@ debugging = int(exp_info['7. Debugging'])
 if debugging == 1:
     fixStEn = 2
     fixDur = 2
+    typCond = ['60', '35', '0'] 
+else:
+    if exp_info['4. Make sequence'] == 'yes':
+        # run lower SNR code
+        # it should return 
+        # typCond = ['60', '35', '0'] 
+        typCond = lowerSNRtest(base_path,exp_info,data_path_sub)
+        print(f'condition types are: {typCond}')
 
 data_path_sub = data_path + exp_info['1. Subject (e.g. sub-00)'] + '/'
 # prepare log file to write the data
@@ -123,14 +131,6 @@ if not os.path.isdir(data_path_sub):
     os.makedirs(data_path_sub)
 logname = data_path_sub + exp_info['1. Subject (e.g. sub-00)']
 
-
-if exp_info['4. Make sequence'] == 'yes':
-    # run lower SNR code
-    # it should return 
-    # typCond = ['60', '35', '0'] 
-    typCond = lowerSNRtest(base_path,exp_info,data_path_sub)
-    print(f'condition types are: {typCond}')
-    
 # save file with subject info ############################## made some changes here. Check
 info_name = f'{logname}_subject-info.csv'
 info_file = open(info_name,'a',encoding='UTF8', newline='')

@@ -65,7 +65,6 @@ def lowerSNRtest(base_path,exp_info,data_path_sub):
     stim_path = f'{base_path}stimuli/'
     mask_path = f'{base_path}masks/'
     back_path = f'{base_path}background/'
-    data_path = f'{base_path}data/'
     save_path = f'{base_path}saved_images/' ####### for screenshotting a trial
 
 
