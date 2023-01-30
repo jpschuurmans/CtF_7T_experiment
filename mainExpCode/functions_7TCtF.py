@@ -186,7 +186,7 @@ class makeSequences(object):
                 # 2 at the first half, 2 at second half
                 # not the first or last trial of the block
                 jittertrials = random.sample(range(1,int(nPositions/2)), 2) + random.sample(range(int(nPositions/2),int(nPositions-1)), 2)
-                catchtrials = random.sample(range(1,int(nPositions/2)), 1) + random.sample(range(int(nPositions/2),int(nPositions-1)), 1)
+                catchtrials = random.sample(range(1,int(nPositions/2)), 2) + random.sample(range(int(nPositions/2),int(nPositions-1)), 1)
                 row = []
                 tmp = copy.deepcopy(allPosi)
                 for elem in jittertrials:

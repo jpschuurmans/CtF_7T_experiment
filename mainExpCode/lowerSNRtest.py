@@ -9,7 +9,7 @@ Created on Tue Jan 17 13:12:29 2023
 #%% =============================================================================
 # imports
 
-from psychopy import visual, event, core, data
+from psychopy import visual, event, core, data, monitors
 import os  
 import numpy.random as rnd          # for random number generators
 import numpy as np
@@ -28,7 +28,7 @@ def lowerSNRtest(base_path,exp_info,data_path_sub):
     stimSize = 550
     
     #### settings; check paper of alexia
-    nStim = ['25', '30', '35'] # signals to test
+    nStim = ['30', '35', '40'] # signals to test
     #nStim = ['15', '25', '35'] # signals to test
     nTrials = 20 # trials per condition
     #nFaces = 10 # per gender
@@ -119,11 +119,23 @@ def lowerSNRtest(base_path,exp_info,data_path_sub):
     debugging = int(snr_info['7. Debugging'])
 
     if snr_info['5. Screen'] == 'BOLD':
+        mon = monitors.Monitor('BOLD_JS')
+        mon.setDistance(210)
+        mon.setGamma(2.06)
         framerate = 120
         screensize = [1920, 1080]
     elif snr_info['5. Screen'] == 'Dell':
+        mon = monitors.Monitor('Dell_JS')
+        mon.setDistance(60)
+        mon.setGamma(2.06)
         framerate = 60
         screensize = [1920, 1200]
+    elif snr_info['5. Screen'] == 'hp':
+        mon = monitors.Monitor('hp')
+        mon.setDistance(60)
+        mon.setGamma(2.06)
+        framerate = 60
+        screensize = [1920, 1080]    
     
     framelength = 1000/(float(framerate))
     fixFr = round(trialFix/framelength)
@@ -206,18 +218,18 @@ def lowerSNRtest(base_path,exp_info,data_path_sub):
 
     # ================================================================
     #window setup
-    win = visual.Window(size=screensize, color='grey', units='pix', fullscr=True, screen = screennr)
+    win = visual.Window(monitor = mon, size=screensize, color='grey', units='pix', fullscr=True, screen = screennr)
 
     instructiontexts = {}
     instructiontexts['inst1'] = 'Welcome to the first part.\nHopefully you are comfortable.\n\nFor this part, faces will appear in the centre of the screen.\nWhile looking at the centre of the fixation cross, you\'ll have to indicate whether the face is male or female.\n\n\nPress a button to continue.'
     instructiontexts['inst2'] = 'If the face is male:\nPress with your index finger\n\nIf the face is female:\nPress with your middle finger\n\n\nPress a button to continue.'
     instructiontexts['inst3'] = 'Lets test the keys!\n\nPress the button\nwith your index finger.\n\n(male face)'
     instructiontexts['inst4'] = 'Great!\n\nNow press the button\nwith your middle finger.\n\n(female face)'
-    instructiontexts['inst5'] = 'It works!\n\nJust to remind you..\nIf the face is male:\nPress with your index finger\n\nIf the face is female:\nPress with your middle finger\n\n\nAre you ready for the task?\n\nPress any button to start.'
+    instructiontexts['inst5'] = 'It works!\nJust to remind you:\n\nif the face is male:\nindex finger\n\nif the face is female:\nmiddle finger\n\n\nAre you ready for the task?\n\nPress any button to start.'
     
     textpage = visual.TextStim(win, height=32, color= 'black')
     #keyList = list('bygrewnd')
-    keyList = list('by')
+    keyList = [right_index_finger, right_middle_finger]
     keyList.append('escape')
     
     #create fixation cross
@@ -311,7 +323,7 @@ def lowerSNRtest(base_path,exp_info,data_path_sub):
     for signal_type in nStim:
         acclist_per_signal[signal_type] = calc_acc_condition(acc_list, signal_type)
         
-    low_sign = optimal_signal(acclist_per_signal, desiredAcc) ################################################### signal closest to 85% correct
+    low_sign = optimal_signal(acclist_per_signal, desiredAcc) ## signal closest to 80% correct
     high_sign = int(low_sign + 25)
     typCond = [str(high_sign), str(low_sign), '0'] 
     

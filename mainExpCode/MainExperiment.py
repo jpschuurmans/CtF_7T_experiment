@@ -63,7 +63,7 @@ fixStEn = 12 # Duration of fixation at begin/end of run in ms
 checkerDur = 10 # seconds
 checkerHz = 4
 
-colourChange = (0.25, 1.0, 1.0) #(0, 1.0, 1.0) = too red #(0.8, 1.0, 1.0) = not red enough
+colourChange = (0.15, 1.0, 1.0) #(0, 1.0, 1.0) = too red #(0.8, 1.0, 1.0) = not red enough
 
 maskDur = 166.66667 # ms
 trialDur = 416.666667 # ms
@@ -78,7 +78,7 @@ exp_info = {
         '2. Session' : ('ses-01','ses-02'),
         '3. Run number': ('01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20'),
         '4. Make sequence' : ('no','yes'), 
-        '5. Screen' : ('BOLD', 'Dell'),
+        '5. Screen' : ('BOLD', 'Dell', 'hp'),
         '6. Prefered language' : ('en','nl'),
         '7. Debugging' : ('0','1')
         }
@@ -100,13 +100,18 @@ if exp_info['5. Screen'] == 'BOLD':
     mon.setGamma(2.06)
     framerate = 120
     screensize = [1920, 1080]
-    gamma = 2.060
 elif exp_info['5. Screen'] == 'Dell':
     mon = monitors.Monitor('Dell_JS')
     mon.setDistance(60)
+    mon.setGamma(2.06)
     framerate = 60
     screensize = [1920, 1200]
-    gamma = 2.060
+elif exp_info['5. Screen'] == 'hp':
+    mon = monitors.Monitor('hp')
+    mon.setDistance(60)
+    mon.setGamma(2.06)
+    framerate = 60
+    screensize = [1920, 1080]    
     
 framelength = 1000/(float(framerate))
 maskFr = round(maskDur/framelength)
@@ -286,7 +291,6 @@ for blocknr, block in enumerate(trialsReady):
     loadEnd = clock.getTime()
     loadTime = loadEnd-fixStart
     fixdur = loadTime
-    print(f'Loading time: {loadTime}')
     
     if blocknr == 0: # first fixation has a different duration
         fixation_dur = fixStEn-1
