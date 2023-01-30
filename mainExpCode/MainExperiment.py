@@ -13,7 +13,7 @@ intact, negated and scrambled faces with their phase scrambled mask.
 # paths
 
 base_path = 'C:/Users/Adminuser/Documents/04_CtF-7T/Experiment/mainExpCode/'
-#base_path = ''
+#base_path = '/home/schuurmans@spinozacentre.knaw.nl/Documents/Experiment/mainExpCode/'
 
 stim_path = f'{base_path}stimuli/'
 mask_path = f'{base_path}masks/'
@@ -66,7 +66,7 @@ fixStEn = 12 # Duration of fixation at begin/end of run in ms
 checkerDur = 10 # seconds
 checkerHz = 4
 
-colourChange = (0.5, 1.0, 1.0) #(0, 1.0, 1.0) = too red #(0.8, 1.0, 1.0) = not red enough
+colourChange = (0.4, 1.0, 1.0) #(0, 1.0, 1.0) = too red #(0.8, 1.0, 1.0) = not red enough
 
 maskDur = 166.66667 # ms
 trialDur = 416.666667 # ms
