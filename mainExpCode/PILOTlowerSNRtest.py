@@ -121,7 +121,7 @@ info_file = open(info_name,'a',encoding='UTF8', newline='')
 ## make / get sequences
 ##### make a position list
 #faceList = list(range(1, int(nTrials+1)))
-faceList = [9,10,11,12]
+faceList = [7,8,13,14]
 stimList = faceList * len(nStim)
 rnd.shuffle(stimList)
 condList = nStim * nTrials
