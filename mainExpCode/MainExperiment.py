@@ -29,7 +29,7 @@ import os
 os.chdir(base_path)
 import csv
 import _pickle as pickle
-from psychopy import visual, event, core, gui, data
+from psychopy import visual, event, core, gui, data, monitors
 import numpy as np
 import glob
 from PIL import Image, ImageOps
@@ -95,11 +95,18 @@ session = exp_info['2. Session']
 
 
 if exp_info['5. Screen'] == 'BOLD':
+    mon = monitors.Monitor('BOLD_JS')
+    mon.setDistance(210)
+    mon.setGamma(2.06)
     framerate = 120
     screensize = [1920, 1080]
+    gamma = 2.060
 elif exp_info['5. Screen'] == 'Dell':
+    mon = monitors.Monitor('Dell_JS')
+    mon.setDistance(60)
     framerate = 60
     screensize = [1920, 1200]
+    gamma = 2.060
     
 framelength = 1000/(float(framerate))
 maskFr = round(maskDur/framelength)
@@ -211,7 +218,7 @@ writer_event.writeheader()
 #%% =============================================================================
 #window setup
 
-win = visual.Window(size=screensize, color='grey', units='pix', fullscr=True, screen=screennr)
+win = visual.Window(monitor=mon,size=screensize, color='grey', units='pix', fullscr=True, screen=screennr)
 instructiontexts = load_txt_as_dict(f'{base_path}instructions.txt')
 textpage = visual.TextStim(win, height=32, color= 'black')
 keyList = list(instructiontexts['button1'])
