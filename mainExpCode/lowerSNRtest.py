@@ -211,6 +211,7 @@ def lowerSNRtest(base_path,exp_info,data_path_sub):
     # ================================================================
     #window setup
     win = visual.Window(size=screensize, color='grey', units='pix', fullscr=True, screen = screennr)
+
     instructiontexts = {}
     instructiontexts['inst1'] = 'Welcome to the first part.\nHopefully you are comfortable.\n\nFor this part, faces will appear in the centre of the screen.\nWhile looking at the centre of the fixation cross, you\'ll have to indicate whether the face is male or female.\n\n\nPress a button to continue.'
     instructiontexts['inst2'] = 'If the face is male:\nPress with your index finger\n\nIf the face is female:\nPress with your middle finger\n\n\nPress a button to continue.'

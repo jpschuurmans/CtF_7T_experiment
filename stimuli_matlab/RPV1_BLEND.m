@@ -35,7 +35,7 @@ ellipseCenter = find(MaskAlpha < MaskAlpha(1));
 
 stimuli = {'mask' '60' '35' '0'}; %stimuli and mask
 stimuli = {'15' '25' '70' '80'}; %stimuli and mask
-stimuli = {'30' '55'}
+stimuli = {'40' '20'}
 
 %preallocate for speed
 finalstim_backpixLC = cell(backgrounds,length(stimuli)); %preallocate
