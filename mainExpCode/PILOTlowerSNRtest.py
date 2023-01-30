@@ -8,16 +8,12 @@ Created on Fri Jan 27 17:13:30 2023
 #%% =============================================================================
 # imports
 
-from psychopy import visual, event, core, gui, data
+from psychopy import visual, event, core
 import os  
 import numpy.random as rnd          # for random number generators
-import glob
 import numpy as np
-import random
 import copy
 from PIL import Image
-import _pickle as pickle
-import itertools
 import csv
 
 #%% =============================================================================
@@ -30,8 +26,8 @@ stimSize = 550
 #### settings; check paper of alexia
 nStim = ['15','20','25','30','35','40'] # signals to test
 
-nTrials = 4 # trials per condition
-nFaces = 2 # per gender
+nTrials = 10 # trials per condition
+#nFaces = 2 # per gender
 cond = ['male', 'female'] # or inversion ['upright' 'inverted']
    
 # one trial is 500ms minimally
@@ -50,7 +46,9 @@ right_ring_finger = 'g' ### none
 
 #%% =============================================================================
 ## paths
-base_path = 'C:/Users/Adminuser/Documents/04_CtF-7T/Experiment/mainExpCode/'
+#base_path = 'C:/Users/Adminuser/Documents/04_CtF-7T/Experiment/mainExpCode/'
+base_path = '/home/schuurmans@spinozacentre.knaw.nl/Documents/Experiment/mainExpCode/'
+
 stim_path = f'{base_path}stimuli/'
 mask_path = f'{base_path}masks/'
 back_path = f'{base_path}background/'
@@ -121,7 +119,7 @@ info_file = open(info_name,'a',encoding='UTF8', newline='')
 ## make / get sequences
 ##### make a position list
 #faceList = list(range(1, int(nTrials+1)))
-faceList = [7,8,13,14]
+faceList = [4,5,6,7,8,13,14,15,16,17]
 stimList = faceList * len(nStim)
 rnd.shuffle(stimList)
 condList = nStim * nTrials
@@ -282,6 +280,8 @@ for trialnr,trialid in enumerate(trialList):
 
     acc_list.append(accuracy)
 
+print(f'Duration test: {clock.getTime()}')
+
 acclist_per_signal = {}
 for signal_type in nStim:
     acclist_per_signal[signal_type] = calc_acc_condition(acc_list, signal_type)
@@ -309,7 +309,7 @@ writer_log.writerow(end_info)
 fix1.setAutoDraw(False)
 fix2.setAutoDraw(False)
 
-endinstr = f'Great job!\n\nJust lay still and relax now\n\nYou can even close your eyes.\n\nThe experimenter will contact you shortly..\n\n("x" to close)'
+endinstr = 'Great job!\n\nJust lay still and relax now\n\nYou can even close your eyes.\n\nThe experimenter will contact you shortly..\n\n("x" to close)'
 endinstr = visual.TextStim(win, color='black',height=32,text=endinstr)
 endinstr.draw()
 win.flip()

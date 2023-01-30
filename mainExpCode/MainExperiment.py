@@ -12,8 +12,8 @@ intact, negated and scrambled faces with their phase scrambled mask.
 #%% ===========================================================================
 # paths
 
-base_path = 'C:/Users/Adminuser/Documents/04_CtF-7T/Experiment/mainExpCode/'
-#base_path = '/home/schuurmans@spinozacentre.knaw.nl/Documents/Experiment/mainExpCode/'
+#base_path = 'C:/Users/Adminuser/Documents/04_CtF-7T/Experiment/mainExpCode/'
+base_path = '/home/schuurmans@spinozacentre.knaw.nl/Documents/Experiment/mainExpCode/'
 
 stim_path = f'{base_path}stimuli/'
 mask_path = f'{base_path}masks/'
@@ -27,15 +27,12 @@ save_path = f'{base_path}saved_images/' ####### for screenshotting a trial
 
 import os
 os.chdir(base_path)
-import itertools
 import csv
 import _pickle as pickle
 from psychopy import visual, event, core, gui, data
 import numpy as np
 import glob
 from PIL import Image, ImageOps
-import random
-import copy
 from functions_7TCtF import *
 from lowerSNRtest import *
 
@@ -66,7 +63,7 @@ fixStEn = 12 # Duration of fixation at begin/end of run in ms
 checkerDur = 10 # seconds
 checkerHz = 4
 
-colourChange = (0.4, 1.0, 1.0) #(0, 1.0, 1.0) = too red #(0.8, 1.0, 1.0) = not red enough
+colourChange = (0.25, 1.0, 1.0) #(0, 1.0, 1.0) = too red #(0.8, 1.0, 1.0) = not red enough
 
 maskDur = 166.66667 # ms
 trialDur = 416.666667 # ms
@@ -113,6 +110,13 @@ endfixFr = round((fixStEn*1000)/framelength)
 language = exp_info['6. Prefered language'] 
 debugging = int(exp_info['7. Debugging'])
 
+data_path_sub = data_path + exp_info['1. Subject (e.g. sub-00)'] + '/'
+# prepare log file to write the data
+if not os.path.isdir(data_path_sub):
+    os.makedirs(data_path_sub)
+logname = data_path_sub + exp_info['1. Subject (e.g. sub-00)']
+
+
 if debugging == 1:
     fixStEn = 2
     fixDur = 2
@@ -124,12 +128,6 @@ else:
         # typCond = ['60', '35', '0'] 
         typCond = lowerSNRtest(base_path,exp_info,data_path_sub)
         print(f'condition types are: {typCond}')
-
-data_path_sub = data_path + exp_info['1. Subject (e.g. sub-00)'] + '/'
-# prepare log file to write the data
-if not os.path.isdir(data_path_sub):
-    os.makedirs(data_path_sub)
-logname = data_path_sub + exp_info['1. Subject (e.g. sub-00)']
 
 # save file with subject info ############################## made some changes here. Check
 info_name = f'{logname}_subject-info.csv'
@@ -216,7 +214,7 @@ writer_event.writeheader()
 win = visual.Window(size=screensize, color='grey', units='pix', fullscr=True, screen=screennr)
 instructiontexts = load_txt_as_dict(f'{base_path}instructions.txt')
 textpage = visual.TextStim(win, height=32, color= 'black')
-keyList = list(instructiontexts[f'button1'])
+keyList = list(instructiontexts['button1'])
 keyList.append('escape')
 
 #create fixation cross

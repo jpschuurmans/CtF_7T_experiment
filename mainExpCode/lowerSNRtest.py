@@ -9,16 +9,12 @@ Created on Tue Jan 17 13:12:29 2023
 #%% =============================================================================
 # imports
 
-from psychopy import visual, event, core, gui, data
+from psychopy import visual, event, core, data
 import os  
 import numpy.random as rnd          # for random number generators
-import glob
 import numpy as np
-import random
 import copy
 from PIL import Image
-import _pickle as pickle
-import itertools
 import csv
 
 #%% =============================================================================
@@ -35,8 +31,8 @@ def lowerSNRtest(base_path,exp_info,data_path_sub):
     nStim = ['25', '30', '35'] # signals to test
     #nStim = ['15', '25', '35'] # signals to test
     nTrials = 20 # trials per condition
-    nFaces = 10 # per gender
-    cond = ['male', 'female'] # or inversion ['upright' 'inverted']
+    #nFaces = 10 # per gender
+    #cond = ['male', 'female'] # or inversion ['upright' 'inverted']
     ## ID 1-10 = female / 11-20 = male
     
     desiredAcc = 80 # desired percentage correct 
@@ -264,8 +260,6 @@ def lowerSNRtest(base_path,exp_info,data_path_sub):
     clock = core.Clock()
     
     # clear any previous presses/escapes
-    response = []
-    corrResp = 0
     rt = None
     response_key = None
     acc_list = []
@@ -317,7 +311,7 @@ def lowerSNRtest(base_path,exp_info,data_path_sub):
     for signal_type in nStim:
         acclist_per_signal[signal_type] = calc_acc_condition(acc_list, signal_type)
         
-    low_sign = optimal_signal(acclist_per_signal, 85) ################################################### signal closest to 85% correct
+    low_sign = optimal_signal(acclist_per_signal, desiredAcc) ################################################### signal closest to 85% correct
     high_sign = int(low_sign + 25)
     typCond = [str(high_sign), str(low_sign), '0'] 
     
@@ -340,7 +334,7 @@ def lowerSNRtest(base_path,exp_info,data_path_sub):
     fix1.setAutoDraw(False)
     fix2.setAutoDraw(False)
     
-    endinstr = f'Great job!\n\nJust lay still and relax now\n\nYou can even close your eyes.\n\nThe experimenter will contact you shortly..'
+    endinstr = 'Great job!\n\nJust lay still and relax now\n\nYou can even close your eyes.\n\nThe experimenter will contact you shortly..'
     endinstr = visual.TextStim(win, color='black',height=32,text=endinstr)
     endinstr.draw()
     win.flip()
