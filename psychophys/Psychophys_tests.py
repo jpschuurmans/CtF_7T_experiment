@@ -8,7 +8,8 @@ Created on Fri Jan 27 13:28:17 2023
 
 #%% ==========================================================================
 # imports and paths
-base_path = 'C:/Users/Adminuser/Documents/04_CtF-7T/Experiment/psychophys/'
+#base_path = 'C:/Users/Adminuser/Documents/04_CtF-7T/Experiment/psychophys/'
+base_path = '/home/schuurmans@spinozacentre.knaw.nl/Documents/Experiment/psychophys/'
 data_path = f'{base_path}data/'
 
 

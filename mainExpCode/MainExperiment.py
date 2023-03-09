@@ -5,7 +5,7 @@ Created on Thu Dec  8 11:04:16 2022
 @author: JSchuurmans
 
 Experiment code - temporal masking, blocked-design
-intact, negated and scrambled faces with their phase scrambled mask. 
+intact, negated and scrambled faces with their phase scrambled mask.
 4 durations
 
 """
@@ -45,7 +45,7 @@ screennr=2
 stimSize = 550
 
 sfType = ['BB']
-durCond = ['50','75','100','150'] #### change however. 
+durCond = ['50','75','100','150'] #### change however.
 
 
 nBlockPerCond = 20 #nr of blocks per condition (in total)
@@ -74,20 +74,20 @@ trialDur = 416.666667 # ms
 
 exp_name = 'Backward masking 7T'
 exp_info = {
-        '1. Subject (e.g. sub-00)' : 'sub-',
-        '2. Session' : ('ses-01','ses-02'),
+        '1. Subject (e.g. sub-00)' : 'sub-09',
+        '2. Session' : ('ses-02','ses-01'),
         '3. Run number': ('01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20'),
-        '4. Make sequence' : ('no','yes'), 
+        '4. Make sequence' : ('no','yes'),
         '5. Screen' : ('BOLD', 'Dell', 'hp'),
         '6. Prefered language' : ('en','nl'),
         '7. Debugging' : ('0','1')
         }
 dlg = gui.DlgFromDict(dictionary=exp_info, title=exp_name)
-    
+
 # If 'Cancel' is pressed, quit
 if dlg.OK == False:
     core.quit()
-        
+
 # Get date and time
 exp_info['date'] = data.getDateStr()
 exp_info['exp_name'] = exp_name
@@ -103,23 +103,21 @@ if exp_info['5. Screen'] == 'BOLD':
 elif exp_info['5. Screen'] == 'Dell':
     mon = monitors.Monitor('Dell_JS')
     mon.setDistance(60)
-    mon.setGamma(2.06)
     framerate = 60
     screensize = [1920, 1200]
 elif exp_info['5. Screen'] == 'hp':
     mon = monitors.Monitor('hp')
     mon.setDistance(60)
-    mon.setGamma(2.06)
     framerate = 60
-    screensize = [1920, 1080]    
-    
+    screensize = [1920, 1080]
+
 framelength = 1000/(float(framerate))
 maskFr = round(maskDur/framelength)
 trialFr = round(trialDur/framelength)
 endfixFr = round((fixStEn*1000)/framelength)
 
 
-language = exp_info['6. Prefered language'] 
+language = exp_info['6. Prefered language']
 debugging = int(exp_info['7. Debugging'])
 
 data_path_sub = data_path + exp_info['1. Subject (e.g. sub-00)'] + '/'
@@ -132,12 +130,12 @@ logname = data_path_sub + exp_info['1. Subject (e.g. sub-00)']
 if debugging == 1:
     fixStEn = 2
     fixDur = 2
-    typCond = ['60', '35', '0'] 
+    typCond = ['60', '35', '0']
 else:
     if exp_info['4. Make sequence'] == 'yes':
         # run lower SNR code
-        # it should return 
-        # typCond = ['60', '35', '0'] 
+        # it should return
+        # typCond = ['60', '35', '0']
         typCond = lowerSNRtest(base_path,exp_info,data_path_sub)
         print(f'condition types are: {typCond}')
 
@@ -164,17 +162,17 @@ if exp_info['4. Make sequence'] == 'yes':
     sequences.makeStimSeq(nBlockPerCond,nPositions,nStim) # self.stimSeq
     sequences.conditions() # self.conditions dict with all conditions listed (and numbered)
 
-    sequences.makeTrialList(framelength, colourChange, stim_path,mask_path,back_path) # self.allRuns are all runs-blocks-trials in correct order          
+    sequences.makeTrialList(framelength, colourChange, stim_path,mask_path,back_path) # self.allRuns are all runs-blocks-trials in correct order
 
     with open(sequences_pickle, 'wb') as file:
         pickle.dump(sequences, file)
-        
+
 else:
     #load sequences dict (unpickle it)
     with open(sequences_pickle, 'rb') as file:
         sequences = pickle.load(file)
-    
-    
+
+
 #int(time_in_ms/framelength)
 
 #%% =============================================================================
@@ -281,9 +279,9 @@ for blocknr, block in enumerate(trialsReady):
     eventfile_info['onset'] = str(fixStart)
     eventfile_info['trial_type'] = 'fixation'
     win.flip()
-    
+
     rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
-    
+
     #preload all stimuli for upcoming block
     toDraw, numFrames = loadblocktrials(win,trialsReady[block],stimSize,maskFr,trialFr, 'circle',0)
     secondDraw, numFrames = loadblocktrials(win,trialsReady[block],stimSize,maskFr,trialFr, facemask,1)
@@ -291,24 +289,24 @@ for blocknr, block in enumerate(trialsReady):
     loadEnd = clock.getTime()
     loadTime = loadEnd-fixStart
     fixdur = loadTime
-    
+
     if blocknr == 0: # first fixation has a different duration
         fixation_dur = fixStEn-1
     else:
-        fixation_dur = fixDur-1 
+        fixation_dur = fixDur-1
 
     while fixdur <= fixation_dur: # wait untill there is only 1 sec of fixation left
         fixNow = clock.getTime()
         fixdur = fixNow-fixStart
         rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
-         
+
     for nFrames in range(round((1000)/framelength)):  #last second of fixation start flipping, to prevent frame drops later on
-        win.flip()  
+        win.flip()
         rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
-        
+
     #end fixation
     fixEnd = clock.getTime()
-    
+
     #write info to log files
     eventfile_info['duration'] = str(fixEnd-fixStart)
     writer_event.writerow(eventfile_info)
@@ -316,39 +314,39 @@ for blocknr, block in enumerate(trialsReady):
     fixation_inf = fixinfo(trial, 'fixation', fixStart, fixEnd, loadTime)
     writer_log.writerow(fixation_inf)
 
-    print(f'fixation, dur: {round((fixEnd-fixStart)*1000)} ms, load dur: {round(loadTime*1000)} ms') 
+    print(f'fixation, dur: {round((fixEnd-fixStart)*1000)} ms, load dur: {round(loadTime*1000)} ms')
     print(f'Block {blocknr} - vis{trial["SNR"]}_dur{trial["duration"]}')
     if debugging == 1:
         shot = 0 # for screenshotting
     else:
         shot = 1
-    
-    # ---------------------------------------------------------------------------------        
+
+    # ---------------------------------------------------------------------------------
     #start trials
     for trialnr in trialsReady[block]:
         trial = trialsReady[block][trialnr]
-        
+
         eventfile_info['onset'] = str(fixEnd)
-        trial_type = f'vis{trial["SNR"]}_dur{trial["duration"]}' 
+        trial_type = f'vis{trial["SNR"]}_dur{trial["duration"]}'
         eventfile_info['trial_type'] = trial_type
-        
+
         backFr = trialFr-(int(trial['nframes']) + maskFr)
-        
+
         startTrial = clock.getTime()
         rt, caught = keyCheck(keyList, win, clock, logfile, eventfile, catchStart, rt, caught)
-        
+
         if trial['catchtrial'] == True: #if its a catchtrail, start the clock
-            
+
             totalCatch += 1
             catchStart = clock.getTime()
             if caught == 1:
                 corrResp += 1
             caught = 0
-        
+
         if shot == 0:
             win.getMovieFrame() ####### for screenshotting a trial
             win.saveMovieFrames(f'{save_path}{trial_type}_fix_{trialnr}.bmp')
-        
+
         ############################ flipping of stimuli -> actual trials
         for imtype in toDraw[trialnr]:
             for frame in range(numFrames[imtype]): #stimulus
@@ -364,7 +362,7 @@ for blocknr, block in enumerate(trialsReady):
                     shot = 1
 
         trial['trialStart'] = startTrial
-        trial['trialDur'] = round((after['back'] - startTrial) * 1000) 
+        trial['trialDur'] = round((after['back'] - startTrial) * 1000)
         trial['stimDur'] = round((after['face'] - startTrial) * 1000)
         trial['maskDur'] = round((after['mask'] - after['face'])*1000)
         trial['rt'] = rt
@@ -374,7 +372,7 @@ for blocknr, block in enumerate(trialsReady):
     # end trials
     eventfile_info['duration'] = str(after['back']-fixEnd)
     writer_event.writerow(eventfile_info)
-    
+
 
 # ---------------------------------------------------------------------------------
 #one more normal fixation
@@ -398,9 +396,9 @@ writer_log.writerow(toSave)
 frPerChecker = int(framerate/checkerHz)
 checkerRep = int((framerate / (2*frPerChecker)) * checkerDur)
 
-#final face chackerboard, then background checkerboard    
+#final face chackerboard, then background checkerboard
 for checks in checkerboards: #checks=1 is face checks=0 is background
-    #per part, 10 seconds. 1 cicle (ori+inv) will show 4 times per sec. 
+    #per part, 10 seconds. 1 cicle (ori+inv) will show 4 times per sec.
     checkerOri = visual.ImageStim(win=win,size=[stimSize,stimSize], image=Image.open(checks[1]),mask='circle')
     checkerInv = visual.ImageStim(win=win,size=[stimSize,stimSize], image=Image.open(checks[0]),mask='circle')
     checkerTimeStart= clock.getTime()
@@ -417,16 +415,16 @@ for checks in checkerboards: #checks=1 is face checks=0 is background
     else:
         checkName = 'checkers_back'
     print(f'{checkName} {checkerTimeEnd-checkerTimeStart} sec')
-    
+
     #annnddd write it away
     eventfile_info['onset'] = str(checkerTimeStart)
     eventfile_info['trial_type'] = 'checkName'
     eventfile_info['duration'] = str(checkerTimeEnd-checkerTimeStart)
     writer_event.writerow(eventfile_info)
-    
+
     toSave = fixinfo(trial, checkName, checkerTimeStart, checkerTimeEnd, f'{str(checkerHz)}Hz')
     writer_log.writerow(toSave)
-    
+
 
 # ---------------------------------------------------------------------------------
 #finalfixationnnn
@@ -444,7 +442,7 @@ toSave = fixinfo(trial, 'fixation', fixStart, fixEnd, None)
 writer_log.writerow(toSave)
 
 
-# ---------------------------------------------------------------------------------  
+# ---------------------------------------------------------------------------------
 # wrap it up
 fix1.setAutoDraw(False)
 fix2.setAutoDraw(False)
@@ -464,10 +462,7 @@ while not 'x' in event.getKeys():
     core.wait(0.1)
 
 
-  
+
 logfile.close()
 eventfile.close()
 win.close()
-
-
-
