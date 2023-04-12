@@ -28,9 +28,9 @@ def lowerSNRtest(base_path,exp_info,data_path_sub):
     stimSize = 550
 
     #### settings; check paper of alexia
-    nStim = ['30', '35', '40'] # signals to test
+    nStim = ['25', '30', '35', '40'] # signals to test
     #nStim = ['15', '25', '35'] # signals to test
-    nTrials = 20 # trials per condition
+    nTrials = 40 # trials per condition
     #nFaces = 10 # per gender
     #cond = ['male', 'female'] # or inversion ['upright' 'inverted']
     ## ID 1-10 = female / 11-20 = male
@@ -41,7 +41,7 @@ def lowerSNRtest(base_path,exp_info,data_path_sub):
     trialFix = 100
     stimdur = 200 # ms to present stimulus for
     isi = 200 # or untill response
-    maskdur = 166
+    maskdur = 200
 
     background = '1'
 
